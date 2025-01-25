@@ -90,7 +90,7 @@ const client = new MultimodalLiveClient();
   // 监听自定义事件
   window.addEventListener('myCustomEvent', async function(event) {
     // console.log('Custom event received:', event.detail.message);
-    await playChunk(event.detail.message,2,0,0,true);
+    await playChunk(event.detail.message,2,0,0,false);
   });
 /**
  * Logs a message to the UI.
