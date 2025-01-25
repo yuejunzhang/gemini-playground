@@ -13,6 +13,7 @@ import { ScreenRecorder } from './video/screen-recorder.js';
 
 // DOM Elements
 const logsContainer = document.getElementById('logs-container');
+const msglist = document.getElementById('msg-list');
 const messageInput = document.getElementById('message-input');
 const sendButton = document.getElementById('send-button');
 const micButton = document.getElementById('mic-button');
@@ -104,12 +105,16 @@ function logMessage(message, type = 'system') {
     switch (type) {
         case 'system':
             emoji.textContent = '⚙️';
+            if(message.includes("turnComplete")){
+                msglist.textContent+='\n'
+            }
             break;
         case 'user':
             emoji.textContent = '🫵';
             break;
         case 'ai':
             emoji.textContent = '🤖';
+            msglist.textContent+=message
             break;
     }
     logEntry.appendChild(emoji);

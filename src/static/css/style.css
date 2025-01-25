@@ -37,7 +37,7 @@ body {
 
 #logs-container {
     border: 1px solid #ccc;
-    height: 300px;
+    height: 30px;
     overflow-y: auto;
     margin-bottom: 10px;
     padding: 10px;
@@ -52,7 +52,19 @@ body {
 #logs-container:hover {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
-
+#msg-list {
+    border: 1px solid #ccc;
+    height: 300px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    scroll-behavior: smooth;
+}
 .log-entry {
     font-size: 0.9em;
     margin-bottom: 5px;
