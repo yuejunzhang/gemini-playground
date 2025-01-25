@@ -5,7 +5,7 @@ import { CONFIG } from './config/config.js';
 import { Logger } from './utils/logger.js';
 import { VideoManager } from './video/video-manager.js';
 import { ScreenRecorder } from './video/screen-recorder.js';
-import * as edgeTTSChunk from './edge_tts_chunk.js';
+// import * as edgeTTSChunk from './edge_tts_chunk.js';
 
 /**
  * @fileoverview Main entry point for the application.
@@ -108,7 +108,7 @@ function logMessage(message, type = 'system') {
             emoji.textContent = '⚙️';
             console.log(message)
             if(message.includes("Turn complete")){
-                edgeTTSChunk.stopPlayChunk();
+                stopPlayChunk();
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
                 // msgDiv.id = `msg-${msglist.children.length + 1}`;
@@ -122,7 +122,7 @@ function logMessage(message, type = 'system') {
             emoji.textContent = '🤖';
             if (msglist.lastElementChild) {
                 msglist.lastElementChild.textContent += message;
-                edgeTTSChunk.playChunk(message,2,0,0,true);
+                playChunk(message,2,0,0,true);
                 msglist.scrollTop = msglist.scrollHeight;
             }
             break;
