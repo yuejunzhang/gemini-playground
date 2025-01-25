@@ -250,7 +250,7 @@ stopPlay=true;
     return result;
   }
 }
-async function playChunk(text,voiceindex=0,rate = 0,pitch=0,autpPlay=true) {
+export async function playChunk(text,voiceindex=0,rate = 0,pitch=0,autpPlay=true) {
   let data;
   stopPlay=false;
     // 设置连接超时
@@ -278,7 +278,7 @@ async function playChunk(text,voiceindex=0,rate = 0,pitch=0,autpPlay=true) {
     audioElement.src = data;
     audioElement.play();
 }
-function stopPlayChunk(){
+export function stopPlayChunk(){
   stopPlay=true;
   if(!audioElement.paused ){audioElement.currentTime = audioElement.duration;}
   audioElement.pause();
