@@ -90,37 +90,6 @@ const client = new MultimodalLiveClient();
  * @param {string} message - The message to log.
  * @param {string} [type='system'] - The type of the message (system, user, ai).
  */
-// function logMessage(message, type = 'system') {
-//     const logEntry = document.createElement('div');
-//     logEntry.classList.add('log-entry', type);
-
-//     const timestamp = document.createElement('span');
-//     timestamp.classList.add('timestamp');
-//     timestamp.textContent = new Date().toLocaleTimeString();
-//     logEntry.appendChild(timestamp);
-
-//     const emoji = document.createElement('span');
-//     emoji.classList.add('emoji');
-//     switch (type) {
-//         case 'system':
-//             emoji.textContent = '⚙️';
-//             break;
-//         case 'user':
-//             emoji.textContent = '🫵';
-//             break;
-//         case 'ai':
-//             emoji.textContent = '🤖';
-//             break;
-//     }
-//     logEntry.appendChild(emoji);
-
-//     const messageText = document.createElement('span');
-//     messageText.textContent = message;
-//     logEntry.appendChild(messageText);
-
-//     logsContainer.appendChild(logEntry);
-//     logsContainer.scrollTop = logsContainer.scrollHeight;
-// }
 function logMessage(message, type = 'system') {
     const logEntry = document.createElement('div');
     logEntry.classList.add('log-entry', type);
@@ -145,24 +114,14 @@ function logMessage(message, type = 'system') {
     }
     logEntry.appendChild(emoji);
 
-    // Check if there is already a span element for AI messages
-    let messageText;
-    if (type === 'ai') {
-        messageText = logsContainer.querySelector('.ai-message');
-        if (!messageText) {
-            messageText = document.createElement('span');
-            messageText.classList.add('ai-message');
-            logEntry.appendChild(messageText);
-        }
-    } else {
-        messageText = document.createElement('span');
-        logEntry.appendChild(messageText);
-    }
-    messageText.textContent += message;
+    const messageText = document.createElement('span');
+    messageText.textContent = message;
+    logEntry.appendChild(messageText);
 
     logsContainer.appendChild(logEntry);
     logsContainer.scrollTop = logsContainer.scrollHeight;
 }
+
 /**
  * Updates the microphone icon based on the recording state.
  */
