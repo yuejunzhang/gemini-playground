@@ -107,7 +107,10 @@ function logMessage(message, type = 'system') {
             emoji.textContent = '⚙️';
             console.log(message)
             if(message.includes("Turn complete")){
-                msglist.textContent+='\n'
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('msg-div');
+                // msgDiv.id = `msg-${msglist.children.length + 1}`;
+                msglist.appendChild(msgDiv);
             }
             break;
         case 'user':
@@ -115,7 +118,9 @@ function logMessage(message, type = 'system') {
             break;
         case 'ai':
             emoji.textContent = '🤖';
-            msglist.textContent+=message
+            if (msglist.lastElementChild) {
+                msglist.lastElementChild.textContent += message;
+            }
             break;
     }
     logEntry.appendChild(emoji);
