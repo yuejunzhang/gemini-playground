@@ -109,6 +109,7 @@ async function logMessage(message, type = 'system') {
             // console.log(message)
             if(message.includes("Turn complete")){
                 // stopPlayChunk();
+                playChunk(msglist.lastElementChild.textContent,2,0,0,false);
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
                 // msgDiv.id = `msg-${msglist.children.length + 1}`;
@@ -122,7 +123,7 @@ async function logMessage(message, type = 'system') {
             emoji.textContent = '🤖';
             if (msglist.lastElementChild) {
                 msglist.lastElementChild.textContent += message;
-                await playChunk(message,2,0,0,false);
+                // await playChunk(message,2,0,0,false);
                 msglist.scrollTop = msglist.scrollHeight;
             }
             break;
