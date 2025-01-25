@@ -106,9 +106,9 @@ async function logMessage(message, type = 'system') {
     switch (type) {
         case 'system':
             emoji.textContent = '⚙️';
-            console.log(message)
+            // console.log(message)
             if(message.includes("Turn complete")){
-                stopPlayChunk();
+                // stopPlayChunk();
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
                 // msgDiv.id = `msg-${msglist.children.length + 1}`;
