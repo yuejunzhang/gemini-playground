@@ -86,12 +86,7 @@ let isUsingTool = false;
 
 // Multimodal Client
 const client = new MultimodalLiveClient();
-// 创建自定义事件
-var customEvent = new CustomEvent('myCustomEvent', {
-    // detail: { message: 'Hello from custom event!' },
-    bubbles: true,
-    cancelable: true
-  });
+
   // 监听自定义事件
   window.addEventListener('myCustomEvent', async function(event) {
     // console.log('Custom event received:', event.detail.message);
@@ -135,8 +130,12 @@ async function logMessage(message, type = 'system') {
                 msglist.lastElementChild.textContent += message;
                 // await playChunk(message,2,0,0,false);
                 // 发送自定义事件
-                let dynamicData = { message: message };
-                customEvent.detail = dynamicData;
+// 创建自定义事件
+                var customEvent = new CustomEvent('myCustomEvent', {
+                    detail: { message:  message },
+                    bubbles: true,
+                    cancelable: true
+                });
                 document.dispatchEvent(customEvent);
                 msglist.scrollTop = msglist.scrollHeight;
             }
