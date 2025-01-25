@@ -92,7 +92,7 @@ const client = new MultimodalLiveClient();
  * @param {string} message - The message to log.
  * @param {string} [type='system'] - The type of the message (system, user, ai).
  */
-function logMessage(message, type = 'system') {
+async function logMessage(message, type = 'system') {
     const logEntry = document.createElement('div');
     logEntry.classList.add('log-entry', type);
 
@@ -108,7 +108,7 @@ function logMessage(message, type = 'system') {
             emoji.textContent = '⚙️';
             console.log(message)
             if(message.includes("Turn complete")){
-                // stopPlayChunk();
+                stopPlayChunk();
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
                 // msgDiv.id = `msg-${msglist.children.length + 1}`;
@@ -122,7 +122,7 @@ function logMessage(message, type = 'system') {
             emoji.textContent = '🤖';
             if (msglist.lastElementChild) {
                 msglist.lastElementChild.textContent += message;
-                playChunk(message,2,0,0,false);
+                await playChunk(message,2,0,0,true);
                 msglist.scrollTop = msglist.scrollHeight;
             }
             break;
