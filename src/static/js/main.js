@@ -86,7 +86,17 @@ let isUsingTool = false;
 
 // Multimodal Client
 const client = new MultimodalLiveClient();
-
+// 创建自定义事件
+const customEvent = new CustomEvent('myCustomEvent', {
+    // detail: { message: 'Hello from custom event!' },
+    bubbles: true,
+    cancelable: true
+  });
+  // 监听自定义事件
+  window.addEventListener('myCustomEvent', async function(event) {
+    // console.log('Custom event received:', event.detail.message);
+    await playChunk(event.detail.message,2,0,0,false);
+  });
 /**
  * Logs a message to the UI.
  * @param {string} message - The message to log.
@@ -109,7 +119,7 @@ async function logMessage(message, type = 'system') {
             // console.log(message)
             if(message.includes("Turn complete")){
                 stopPlayChunk();
-                playChunk(msglist.lastElementChild.textContent,2,0,0,false);
+                // playChunk(msglist.lastElementChild.textContent,2,0,0,false);
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
                 // msgDiv.id = `msg-${msglist.children.length + 1}`;
@@ -124,6 +134,10 @@ async function logMessage(message, type = 'system') {
             if (msglist.lastElementChild) {
                 msglist.lastElementChild.textContent += message;
                 // await playChunk(message,2,0,0,false);
+                // 发送自定义事件
+                let dynamicData = { message: message };
+                customEvent.detail = dynamicData;
+                document.dispatchEvent(customEvent);
                 msglist.scrollTop = msglist.scrollHeight;
             }
             break;
