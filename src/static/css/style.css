@@ -65,6 +65,11 @@ body {
     transition: box-shadow 0.3s ease;
     scroll-behavior: smooth;
 }
+msg-div{
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding-bottom: 20px;
+}
 .log-entry {
     font-size: 0.9em;
     margin-bottom: 5px;
