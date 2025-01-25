@@ -66,7 +66,7 @@ body {
     scroll-behavior: smooth;
 }
 .msg-div{
-    border: 1px solid #3402fa;
+    border: 1px solid #dbd9e0;
     border-radius: 10px 10px 10px 10px;
     white-space: pre-wrap;
     word-wrap: break-word;
