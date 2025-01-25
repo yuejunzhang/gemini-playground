@@ -122,7 +122,7 @@ async function logMessage(message, type = 'system') {
             emoji.textContent = '🤖';
             if (msglist.lastElementChild) {
                 msglist.lastElementChild.textContent += message;
-                await playChunk(message,2,0,0,true);
+                await playChunk(message,2,0,0,false);
                 msglist.scrollTop = msglist.scrollHeight;
             }
             break;
