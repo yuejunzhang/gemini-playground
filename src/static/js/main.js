@@ -90,7 +90,7 @@ const client = new MultimodalLiveClient();
   // 监听自定义事件
   window.addEventListener('myCustomEvent', async function(event) {
     // console.log('Custom event received:', event.detail.message);
-    await playChunk(event.detail.message,2,0,0,false);
+    await playChunk(event.detail.message,2,0,0,true);
   });
 /**
  * Logs a message to the UI.
@@ -113,7 +113,7 @@ async function logMessage(message, type = 'system') {
             emoji.textContent = '⚙️';
             // console.log(message)
             if(message.includes("Turn complete")){
-                stopPlayChunk();
+                // stopPlayChunk();
                 // playChunk(msglist.lastElementChild.textContent,2,0,0,false);
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
