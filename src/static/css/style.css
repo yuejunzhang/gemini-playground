@@ -66,9 +66,11 @@ body {
     scroll-behavior: smooth;
 }
 msg-div{
+    border: 1px solid #000000;
+    border-radius: 10px,10px,10px,10px;
     white-space: pre-wrap;
     word-wrap: break-word;
-    padding-bottom: 20px;
+    margin-bottom: 20px;
 }
 .log-entry {
     font-size: 0.9em;
