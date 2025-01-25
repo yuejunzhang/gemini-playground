@@ -105,7 +105,7 @@ function logMessage(message, type = 'system') {
     switch (type) {
         case 'system':
             emoji.textContent = '⚙️';
-            if(message.includes("turnComplete")){
+            if(message.includes("Turn complete")){
                 msglist.textContent+='\n'
             }
             break;
