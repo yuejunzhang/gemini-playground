@@ -87,7 +87,7 @@ let isUsingTool = false;
 // Multimodal Client
 const client = new MultimodalLiveClient();
 // 创建自定义事件
-const customEvent = new CustomEvent('myCustomEvent', {
+var customEvent = new CustomEvent('myCustomEvent', {
     // detail: { message: 'Hello from custom event!' },
     bubbles: true,
     cancelable: true
