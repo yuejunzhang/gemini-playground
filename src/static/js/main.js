@@ -5,7 +5,7 @@ import { CONFIG } from './config/config.js';
 import { Logger } from './utils/logger.js';
 import { VideoManager } from './video/video-manager.js';
 import { ScreenRecorder } from './video/screen-recorder.js';
-import edgeTTSChunk from './edge_tts_chunk.js';
+import * as edgeTTSChunk from './edge_tts_chunk.js';
 
 /**
  * @fileoverview Main entry point for the application.
