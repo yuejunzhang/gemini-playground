@@ -120,6 +120,7 @@ function logMessage(message, type = 'system') {
             emoji.textContent = '🤖';
             if (msglist.lastElementChild) {
                 msglist.lastElementChild.textContent += message;
+                msglist.scrollTop = msglist.scrollHeight;
             }
             break;
     }

@@ -67,7 +67,7 @@ body {
 }
 .msg-div{
     border: 1px solid #3402fa;
-    border-radius: 10px,10px,10px,10px;
+    border-radius: 10px 10px 10px 10px;
     white-space: pre-wrap;
     word-wrap: break-word;
     margin-bottom: 20px;
