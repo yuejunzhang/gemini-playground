@@ -105,6 +105,7 @@ function logMessage(message, type = 'system') {
     switch (type) {
         case 'system':
             emoji.textContent = '⚙️';
+            console.log(message)
             if(message.includes("Turn complete")){
                 msglist.textContent+='\n'
             }
