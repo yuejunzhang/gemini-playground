@@ -65,8 +65,8 @@ body {
     transition: box-shadow 0.3s ease;
     scroll-behavior: smooth;
 }
-msg-div{
-    border: 1px solid #000000;
+.msg-div{
+    border: 1px solid #3402fa;
     border-radius: 10px,10px,10px,10px;
     white-space: pre-wrap;
     word-wrap: break-word;
