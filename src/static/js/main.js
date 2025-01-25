@@ -107,7 +107,7 @@ function logMessage(message, type = 'system') {
             emoji.textContent = '⚙️';
             console.log(message)
             if(message.includes("Turn complete")){
-                const msgDiv = document.createElement('pre');
+                const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
                 // msgDiv.id = `msg-${msglist.children.length + 1}`;
                 msglist.appendChild(msgDiv);
