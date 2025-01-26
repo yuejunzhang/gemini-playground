@@ -131,7 +131,7 @@ function logMessage(message, type = 'system') {
             if (msglist.lastElementChild) {
                 msglist.lastElementChild.textContent += message;
                 chunk += message;
-                if (/[\:\：\?\？\。\.\n]$/.test(message)){
+                if (/[:\：\?？\.\。]|[\n]$/u.test(message)){
                     chunk=chunk.replace(/[\\*#]/g, '');
                     // await playChunk(message,2,0,0,false);
                     // 发送自定义事件
