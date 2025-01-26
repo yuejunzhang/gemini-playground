@@ -133,7 +133,8 @@ async function logMessage(message, type = 'system') {
 //                 // 发送自定义事件
                 chunk += message;
                 // console.log(message);
-                if (/[.:：?？.。]$/u.test(message)){
+                if (/[:：?？.。]|\n\n$/u.test(message)){
+                    console.log(message);
                     chunk=chunk.replace(/[\\*#]/g, '');
                     // await playChunk(message,2,0,0,false);
                     // 发送自定义事件
