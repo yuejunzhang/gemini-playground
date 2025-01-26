@@ -88,15 +88,16 @@ let isUsingTool = false;
 const client = new MultimodalLiveClient();
 
   // 监听自定义事件
-//   window.addEventListener('myCustomEvent', async function(event) {
-//     // console.log('Custom event received:', event.detail.message);
-//     await playChunk(event.detail.message,2,0,0,false);
-//   });
+  document.addEventListener('myCustomEvent', async function(event) {
+    // console.log('Custom event received:', event.detail.message);
+    await playChunk(event.detail.message,2,0,0,false);
+  });
 /**
  * Logs a message to the UI.
  * @param {string} message - The message to log.
  * @param {string} [type='system'] - The type of the message (system, user, ai).
  */
+var chunk=""
 async function logMessage(message, type = 'system') {
     const logEntry = document.createElement('div');
     logEntry.classList.add('log-entry', type);
@@ -113,8 +114,8 @@ async function logMessage(message, type = 'system') {
             emoji.textContent = '⚙️';
             // console.log(message)
             if(message.includes("Turn complete")){
-                stopPlayChunk();
-                playChunk(msglist.lastElementChild.textContent,2,0,0,false);
+                // stopPlayChunk();
+                // playChunk(msglist.lastElementChild.textContent,2,0,0,false);
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
                 // msgDiv.id = `msg-${msglist.children.length + 1}`;
@@ -130,13 +131,21 @@ async function logMessage(message, type = 'system') {
                 msglist.lastElementChild.textContent += message;
                 // await playChunk(message,2,0,0,false);
 //                 // 发送自定义事件
-// // 创建自定义事件
-//                 var customEvent = new CustomEvent('myCustomEvent', {
-//                     detail: { message:  message },
-//                     bubbles: true,
-//                     cancelable: true
-//                 });
-//                 document.dispatchEvent(customEvent);
+                chunk += message;
+                console.log(message);
+                if (/[:\：\?？\.\。]|[\n]$/u.test(message)){
+                    chunk=chunk.replace(/[\\*#]/g, '');
+                    // await playChunk(message,2,0,0,false);
+                    // 发送自定义事件
+
+                    var customEvent = new CustomEvent('myCustomEvent', {
+                        detail: { message:  chunk },
+                        bubbles: true,
+                        cancelable: true
+                    });
+                    document.dispatchEvent(customEvent);
+                    chunk="";
+                }
                 msglist.scrollTop = msglist.scrollHeight;
             }
             break;
