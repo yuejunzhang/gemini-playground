@@ -490,13 +490,15 @@ body {
     margin-bottom: 10px;
     display: flex;
     gap: 10px;
+    width: 100%;
+    justify-content: center;
 }
 
 #api-key {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 100px;
+    width: 100%;
 }
 
 #voice-select  #response-type-select{
