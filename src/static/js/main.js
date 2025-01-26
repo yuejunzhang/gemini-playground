@@ -88,9 +88,9 @@ let isUsingTool = false;
 const client = new MultimodalLiveClient();
 
   // 监听自定义事件
-  document.addEventListener('myCustomEvent',  function(event) {
+  document.addEventListener('myCustomEvent',  async function(event) {
     console.log('====================Custom event received:', event.detail.message);
-     playChunk(event.detail.message,2,0,0,false);
+     await playChunk(event.detail.message,2,0,0,false);
   });
 /**
  * Logs a message to the UI.
@@ -98,7 +98,7 @@ const client = new MultimodalLiveClient();
  * @param {string} [type='system'] - The type of the message (system, user, ai).
  */
 var chunk ="";
-async function logMessage(message, type = 'system') {
+function logMessage(message, type = 'system') {
     const logEntry = document.createElement('div');
     logEntry.classList.add('log-entry', type);
 
@@ -132,7 +132,7 @@ async function logMessage(message, type = 'system') {
                 msglist.lastElementChild.textContent += message;
                 chunk += message;
                 if (/[\:\：\?\？\。\.\n]$/.test(message)){
-                    chunk.replace(/[\\*#]/g, '');
+                    chunk=chunk.replace(/[\\*#]/g, '');
                     // await playChunk(message,2,0,0,false);
                     // 发送自定义事件
 
