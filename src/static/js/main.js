@@ -115,7 +115,8 @@ async function logMessage(message, type = 'system') {
             // console.log(message)
             if(message.includes("Turn complete")){
                 stopPlayChunk();
-                playChunk(msglist.lastElementChild.textContent,2,0,0,false);
+                let chunk=msglist.lastElementChild.textContent.replace(/[\\*#]/g, '');
+                playChunk(chunk,2,0,0,false);
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
                 // msgDiv.id = `msg-${msglist.children.length + 1}`;
