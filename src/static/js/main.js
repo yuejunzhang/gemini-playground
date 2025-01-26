@@ -97,6 +97,7 @@ const client = new MultimodalLiveClient();
  * @param {string} message - The message to log.
  * @param {string} [type='system'] - The type of the message (system, user, ai).
  */
+var chunk ="";
 async function logMessage(message, type = 'system') {
     const logEntry = document.createElement('div');
     logEntry.classList.add('log-entry', type);
@@ -119,6 +120,7 @@ async function logMessage(message, type = 'system') {
                 msgDiv.classList.add('msg-div');
                 // msgDiv.id = `msg-${msglist.children.length + 1}`;
                 msglist.appendChild(msgDiv);
+                chunk="";
             }
             break;
         case 'user':
@@ -128,15 +130,19 @@ async function logMessage(message, type = 'system') {
             emoji.textContent = '🤖';
             if (msglist.lastElementChild) {
                 msglist.lastElementChild.textContent += message;
-                // await playChunk(message,2,0,0,false);
-                // 发送自定义事件
+                chunk += message;
+                if (chunk.endsWith('\n') || str.endsWith('.')){
+                    // await playChunk(message,2,0,0,false);
+                    // 发送自定义事件
 
-                var customEvent = new CustomEvent('myCustomEvent', {
-                    detail: { message:  message },
-                    bubbles: true,
-                    cancelable: true
-                });
-                document.dispatchEvent(customEvent);
+                    var customEvent = new CustomEvent('myCustomEvent', {
+                        detail: { message:  chunk },
+                        bubbles: true,
+                        cancelable: true
+                    });
+                    document.dispatchEvent(customEvent);
+                    chunk="";
+                }
                 msglist.scrollTop = msglist.scrollHeight;
             }
             break;
