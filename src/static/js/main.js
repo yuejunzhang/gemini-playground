@@ -131,7 +131,7 @@ async function logMessage(message, type = 'system') {
             if (msglist.lastElementChild) {
                 msglist.lastElementChild.textContent += message;
                 chunk += message;
-                if (chunk.endsWith('\n') || str.endsWith('.')){
+                if (chunk.endsWith('\n') || chunk.endsWith('.')|| chunk.endsWith('。'|| chunk.endsWith('？'))){
                     // await playChunk(message,2,0,0,false);
                     // 发送自定义事件
 
