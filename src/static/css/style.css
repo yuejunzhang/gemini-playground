@@ -106,7 +106,7 @@ body {
     margin-right: 10px;
 }
 
-#send-button, #mic-button {
+#send-button {
     padding: 10px;
     border: none;
     border-radius: 4px;
@@ -235,7 +235,7 @@ body {
     transition: background-color 0.3s ease;
 }
 
-#camera-button {
+#camera-button, #mic-button {
     background: #4285f4;
     color: white;
     border: none;
