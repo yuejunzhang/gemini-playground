@@ -114,7 +114,7 @@ async function logMessage(message, type = 'system') {
             emoji.textContent = '⚙️';
             // console.log(message)
             if(message.includes("Turn complete")){
-                stopPlayChunk();
+                // stopPlayChunk();
                 // playChunk(msglist.lastElementChild.textContent,2,0,0,false);
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
@@ -131,7 +131,8 @@ async function logMessage(message, type = 'system') {
             if (msglist.lastElementChild) {
                 msglist.lastElementChild.textContent += message;
                 chunk += message;
-                if (chunk.endsWith('\n') || chunk.endsWith('.')|| chunk.endsWith('。'|| chunk.endsWith('？'))){
+                if (/[\:\：\?\？\。\.\n]$/.test(message)){
+                    chunk.replace(/[\\*#]/g, '');
                     // await playChunk(message,2,0,0,false);
                     // 发送自定义事件
 
