@@ -111,7 +111,7 @@ var chunks=""
 console.log(chunk);
         if (chunk) {
             // 播放句子
-            playChunk(chunk,2,0,0,false);
+            await playChunk(chunk,2,0,0,false);
         }
 
         // 移除已经处理的部分
