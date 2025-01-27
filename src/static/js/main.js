@@ -92,7 +92,7 @@ var chunks=""
     console.log('Custom event received:', event.detail.message);
     // console.log(chunks);
            // 使用正则表达式检测断句符号（句号、问号、感叹号等）
-    const chunkEndRegex = /[。.?？\n]/u;
+    const chunkEndRegex = /[?？\n]/u;
     while (chunks.length>0) {
         // 查找缓冲区中第一个断句符号的位置
         const match = chunks.match(chunkEndRegex);
