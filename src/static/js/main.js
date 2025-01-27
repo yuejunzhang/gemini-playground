@@ -88,7 +88,7 @@ let isUsingTool = false;
 const client = new MultimodalLiveClient();
 
   // 监听自定义事件
-  document.addEventListener('NewChunks', function(event) {
+  document.addEventListener('NewChunks', async  function(event) {
     console.log('Custom event received:', event.detail.message);
            // 使用正则表达式检测断句符号（句号、问号、感叹号等）
     const chunkEndRegex = /[。！？.!?\n]/u;
