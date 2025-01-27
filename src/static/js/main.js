@@ -112,7 +112,7 @@ console.log(chunk);
         if (chunk) {
             // 播放句子
             // chunk=chunk.replace(/[\\*#]/g, '');
-             playChunk(chunk,2,0,0,false);
+            await playChunk(chunk,2,0,0,false);
                     // 移除已经处理的部分
         chunks = chunks.slice(endIndex).trim();
         }
@@ -143,7 +143,8 @@ async function logMessage(message, type = 'system') {
             // console.log(message)
             if(message.includes("Turn complete")){
                 // chunks="";
-                stopPlayChunk();
+                // stopPlayChunk();
+                // playChunk(".",2,0,0,false);
                 // let chunk=msglist.lastElementChild.textContent.replace(/[\\*#]/g, '');
                 // playChunk(chunk,2,0,0,false);
                 const msgDiv = document.createElement('div');
