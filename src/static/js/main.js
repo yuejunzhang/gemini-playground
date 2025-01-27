@@ -98,6 +98,7 @@ const client = new MultimodalLiveClient();
 
         if (!match) {
             // 如果没有找到断句符号，继续等待更多数据
+            await new Promise(resolve => setTimeout(resolve, 100));
             continue;
         }
 
