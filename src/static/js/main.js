@@ -111,11 +111,13 @@ var chunks=""
 console.log(chunk);
         if (chunk) {
             // 播放句子
+            chunk=chunk.replace(/[\\*#]/g, '');
             await playChunk(chunk,2,0,0,false);
+                    // 移除已经处理的部分
+        chunks = chunks.slice(endIndex).trim();
         }
 
-        // 移除已经处理的部分
-        chunks = chunks.slice(endIndex).trim();
+
     }
   });
 /**
