@@ -111,7 +111,6 @@ var chunks=""
 console.log(chunk);
         if (chunk) {
             // 播放句子
-            // chunk=chunk.replace(/[\\*#]/g, '');
             await playChunk(chunk,2,0,0,false);
                     // 移除已经处理的部分
         }
@@ -161,6 +160,7 @@ async function logMessage(message, type = 'system') {
 
                 let chunksLength = chunks.length;
                 chunks += message;
+                chunks=chunks.replace(/[\\*#]/g, '');
                 chunks=chunks.replace(/\n+/g, "\n");
                 // // console.log(message);
                 // if (/[:：?？.。]|\n\n$/u.test(message)){
