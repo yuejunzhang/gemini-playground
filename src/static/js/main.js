@@ -86,7 +86,7 @@ let isUsingTool = false;
 
 // Multimodal Client
 const client = new MultimodalLiveClient();
-
+var chunks=""
   // 监听自定义事件
   document.addEventListener('NewChunks', async  function(event) {
     console.log('Custom event received:', event.detail.message);
@@ -122,7 +122,7 @@ console.log(chunk);
  * @param {string} message - The message to log.
  * @param {string} [type='system'] - The type of the message (system, user, ai).
  */
-var chunks=""
+
 async function logMessage(message, type = 'system') {
     const logEntry = document.createElement('div');
     logEntry.classList.add('log-entry', type);
@@ -139,7 +139,7 @@ async function logMessage(message, type = 'system') {
             emoji.textContent = '⚙️';
             // console.log(message)
             if(message.includes("Turn complete")){
-                chunks="";
+                // chunks="";
                 stopPlayChunk();
                 // let chunk=msglist.lastElementChild.textContent.replace(/[\\*#]/g, '');
                 // playChunk(chunk,2,0,0,false);
