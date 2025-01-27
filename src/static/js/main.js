@@ -103,7 +103,7 @@ var chunks=""
         }
 
         // 获取断句符号的位置
-        const endIndex = match.index + match[0].length;
+        const endIndex = match.index + 1;
 
         // 提取完整的句子
         const chunk = chunks.slice(0, endIndex).trim();
