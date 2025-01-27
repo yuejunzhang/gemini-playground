@@ -160,7 +160,7 @@ async function logMessage(message, type = 'system') {
                 completed=false;
                 chunks="";
                 stopPlayChunk();
-                playChunk(".",2,0,0,false);
+                // playChunk(".",2,0,0,false);
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
                 msglist.appendChild(msgDiv);
