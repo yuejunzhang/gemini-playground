@@ -103,7 +103,7 @@ const client = new MultimodalLiveClient();
         }
 
         // 获取断句符号的位置
-        const endIndex = match.index + 1;
+        const endIndex = match.index + match[0].length;
 
         // 提取完整的句子
         const chunk = chunks.slice(0, endIndex).trim();
