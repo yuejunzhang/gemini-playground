@@ -112,6 +112,11 @@ console.log(chunk);
         if (chunk) {
             // 播放句子
             await playChunk(chunk,2,0,0,false);
+            if(chunks==""){
+                playChunk(".",2,0,0,false);
+                playChunk(".",2,0,0,false);
+                stopPlayChunk();
+            }
                     // 移除已经处理的部分
         }
         chunks = chunks.slice(endIndex).trim();
