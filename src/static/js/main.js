@@ -108,6 +108,7 @@ var chunks=""
 
         // 提取完整的句子
         const chunk = chunks.slice(0, endIndex).trim();
+        chunks = chunks.slice(endIndex).trim();
 console.log(chunk);
         if (chunk) {
             // 播放句子
@@ -120,8 +121,6 @@ console.log(chunk);
             }
                     // 移除已经处理的部分
         }
-        chunks = chunks.slice(endIndex).trim();
-
     }
   });
 /**
