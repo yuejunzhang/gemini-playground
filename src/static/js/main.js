@@ -114,7 +114,7 @@ console.log(chunk);
             await playChunk(chunk,2,0,0,false);
                     // 移除已经处理的部分
         }
-chunks = chunks.slice(endIndex).trim();
+        chunks = chunks.slice(endIndex).trim();
 
     }
   });
@@ -162,12 +162,6 @@ async function logMessage(message, type = 'system') {
                 chunks += message;
                 chunks=chunks.replace(/[\\*#]/g, '');
                 chunks=chunks.replace(/\n+/g, "\n");
-                // // console.log(message);
-                // if (/[:：?？.。]|\n\n$/u.test(message)){
-                //     console.log(message);
-                //     chunk=chunk.replace(/[\\*#]/g, '');
-                //     // await playChunk(message,2,0,0,false);
-                //     // 发送自定义事件
                 if(chunksLength==0){
                     var customEvent = new CustomEvent('NewChunks', {
                         detail: { message:  "new chunks" },
