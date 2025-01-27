@@ -42,7 +42,7 @@ body {
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(185, 183, 183, 0.95);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
@@ -59,7 +59,7 @@ body {
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(105, 206, 252, 0.95);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;

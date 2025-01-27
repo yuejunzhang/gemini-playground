@@ -146,6 +146,7 @@ async function logMessage(message, type = 'system') {
             // console.log(message)
             if(message.includes("Turn complete")){
                 completed=true;
+                chunks+="\n";
             }
             break;
         case 'user':
