@@ -123,7 +123,7 @@ console.log(chunk);
  * @param {string} message - The message to log.
  * @param {string} [type='system'] - The type of the message (system, user, ai).
  */
-
+let completed=false;
 async function logMessage(message, type = 'system') {
     const logEntry = document.createElement('div');
     logEntry.classList.add('log-entry', type);
@@ -140,14 +140,15 @@ async function logMessage(message, type = 'system') {
             emoji.textContent = '⚙️';
             // console.log(message)
             if(message.includes("Turn complete")){
+                completed=true;
                 // chunks="";
                 // stopPlayChunk();
                 // playChunk(".",2,0,0,false);
                 // let chunk=msglist.lastElementChild.textContent.replace(/[\\*#]/g, '');
                 // playChunk(chunk,2,0,0,false);
-                const msgDiv = document.createElement('div');
-                msgDiv.classList.add('msg-div');
-                msglist.appendChild(msgDiv);
+                // const msgDiv = document.createElement('div');
+                // msgDiv.classList.add('msg-div');
+                // msglist.appendChild(msgDiv);
             }
             break;
         case 'user':
@@ -155,6 +156,15 @@ async function logMessage(message, type = 'system') {
             break;
         case 'ai':
             emoji.textContent = '🤖';
+            if(completed){
+                completed=false;
+                chunks="";
+                stopPlayChunk();
+                playChunk(".",2,0,0,false);
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('msg-div');
+                msglist.appendChild(msgDiv);
+            }
             if (msglist.lastElementChild) {
                 msglist.lastElementChild.textContent += message;
 
