@@ -96,17 +96,17 @@ const client = new MultimodalLiveClient();
         // 查找缓冲区中第一个断句符号的位置
         const match = chunks.match(chunkEndRegex);
 
-        // if (!match) {
-        //     // 如果没有找到断句符号，跳出循环，等待更多数据
-        //     break;
-        // }
+        if (!match) {
+            // 如果没有找到断句符号，继续等待更多数据
+            continue;
+        }
 
         // 获取断句符号的位置
         const endIndex = match.index + 1;
 
         // 提取完整的句子
         const chunk = chunks.slice(0, endIndex).trim();
-
+console.log(chunk);
         if (chunk) {
             // 播放句子
             playChunk(chunk,2,0,0,false);
