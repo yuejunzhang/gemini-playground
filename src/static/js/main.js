@@ -112,12 +112,12 @@ console.log(chunk);
         if (chunk) {
             // 播放句子
             await playChunk(chunk,2,0,0,false);
-            if(chunks==""){
-                playChunk(".",2,0,0,false);
-                playChunk(".",2,0,0,false);
-                stopPlayChunk();
-                break;
-            }
+            // if(chunks==""){
+            //     playChunk(".",2,0,0,false);
+            //     playChunk(".",2,0,0,false);
+            //     stopPlayChunk();
+            //     break;
+            // }
                     // 移除已经处理的部分
         }
         chunks = chunks.slice(endIndex).trim();
@@ -147,14 +147,6 @@ async function logMessage(message, type = 'system') {
             // console.log(message)
             if(message.includes("Turn complete")){
                 completed=true;
-                // chunks="";
-                // stopPlayChunk();
-                // playChunk(".",2,0,0,false);
-                // let chunk=msglist.lastElementChild.textContent.replace(/[\\*#]/g, '');
-                // playChunk(chunk,2,0,0,false);
-                // const msgDiv = document.createElement('div');
-                // msgDiv.classList.add('msg-div');
-                // msglist.appendChild(msgDiv);
             }
             break;
         case 'user':
