@@ -88,16 +88,40 @@ let isUsingTool = false;
 const client = new MultimodalLiveClient();
 
   // 监听自定义事件
-//   document.addEventListener('myCustomEvent', function(event) {
-//     console.log('Custom event received:', event.detail.message);
-//     playChunk(event.detail.message,2,0,0,false);
-//   });
+  document.addEventListener('NewChunks', function(event) {
+    console.log('Custom event received:', event.detail.message);
+           // 使用正则表达式检测断句符号（句号、问号、感叹号等）
+    const chunkEndRegex = /[。！？.!?\n]/u;
+    while (chunks.length>1) {
+        // 查找缓冲区中第一个断句符号的位置
+        const match = chunks.match(chunkEndRegex);
+
+        // if (!match) {
+        //     // 如果没有找到断句符号，跳出循环，等待更多数据
+        //     break;
+        // }
+
+        // 获取断句符号的位置
+        const endIndex = match.index + 1;
+
+        // 提取完整的句子
+        const chunk = chunks.slice(0, endIndex).trim();
+
+        if (chunk) {
+            // 播放句子
+            playChunk(chunk,2,0,0,false);
+        }
+
+        // 移除已经处理的部分
+        chunks = chunks.slice(endIndex).trim();
+    }
+  });
 /**
  * Logs a message to the UI.
  * @param {string} message - The message to log.
  * @param {string} [type='system'] - The type of the message (system, user, ai).
  */
-// var chunk=""
+var chunks=""
 async function logMessage(message, type = 'system') {
     const logEntry = document.createElement('div');
     logEntry.classList.add('log-entry', type);
@@ -114,12 +138,12 @@ async function logMessage(message, type = 'system') {
             emoji.textContent = '⚙️';
             // console.log(message)
             if(message.includes("Turn complete")){
+                chunks="";
                 stopPlayChunk();
-                let chunk=msglist.lastElementChild.textContent.replace(/[\\*#]/g, '');
-                playChunk(chunk,2,0,0,false);
+                // let chunk=msglist.lastElementChild.textContent.replace(/[\\*#]/g, '');
+                // playChunk(chunk,2,0,0,false);
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
-                // msgDiv.id = `msg-${msglist.children.length + 1}`;
                 msglist.appendChild(msgDiv);
             }
             break;
@@ -130,24 +154,24 @@ async function logMessage(message, type = 'system') {
             emoji.textContent = '🤖';
             if (msglist.lastElementChild) {
                 msglist.lastElementChild.textContent += message;
-                // await playChunk(message,2,0,0,false);
-//                 // 发送自定义事件
-                // chunk += message;
+
+                let chunksLength = chunks.length;
+                chunks += message;
+                chunks=chunks.replace(/\n+/g, "\n");
                 // // console.log(message);
                 // if (/[:：?？.。]|\n\n$/u.test(message)){
                 //     console.log(message);
                 //     chunk=chunk.replace(/[\\*#]/g, '');
                 //     // await playChunk(message,2,0,0,false);
                 //     // 发送自定义事件
-
-                //     var customEvent = new CustomEvent('myCustomEvent', {
-                //         detail: { message:  chunk },
-                //         bubbles: true,
-                //         cancelable: true
-                //     });
-                //     document.dispatchEvent(customEvent);
-                //     chunk="";
-                // }
+                if(chunksLength==0){
+                    var customEvent = new CustomEvent('NewChunks', {
+                        detail: { message:  "new chunks" },
+                        bubbles: true,
+                        cancelable: true
+                    });
+                    document.dispatchEvent(customEvent);
+                }
                 msglist.scrollTop = msglist.scrollHeight;
             }
             break;
