@@ -581,9 +581,9 @@ body {
         max-height: 30vh;
     }
 
-    #logs-container {
+    /* #logs-container {
         max-height: calc(30vh - 50px);
-    }
+    } */
 
     .input-controls {
         position: sticky;
