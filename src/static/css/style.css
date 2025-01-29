@@ -116,7 +116,7 @@ body {
     transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
-    width: 6opx;
+    width: 20%;
 }
 
 #send-button:hover, #mic-button:hover {
