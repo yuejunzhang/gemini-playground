@@ -37,7 +37,7 @@ body {
 
 #logs-container {
     border: 1px solid #ccc;
-    height: 30px;
+    height: 1ch;
     overflow-y: auto;
     margin-bottom: 10px;
     padding: 10px;
@@ -116,7 +116,7 @@ body {
     transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
-    width: 10%;
+    width: 6opx;
 }
 
 #send-button:hover, #mic-button:hover {
