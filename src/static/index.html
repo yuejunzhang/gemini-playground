@@ -14,21 +14,30 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="js/edge_tts_chunk.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const logsList = document.getElementById("logs-container")
-            const msgList = document.getElementById("msg-list")
-            // const configContainer = document.querySelector('#config-container');
-    
-            logsList.addEventListener('click', function() {
-                logsList.style.height = '300px';
-                msgList.style.height = '1ch';
-            });
-    
-            msgList.addEventListener('click', function() {
-                logsList.style.height = '1ch';
-                msgList.style.height = '300px';
-            });
-        });
+document.addEventListener('DOMContentLoaded', function() {
+    const logsList = document.getElementById("logs-container");
+    const msgList = document.getElementById("msg-list");
+
+    // 初始设置
+    logsList.style.cursor = 'pointer'; // 手形光标
+    msgList.style.cursor = 'default';  // 默认光标
+
+    logsList.addEventListener('click', function() {
+        logsList.style.height = '300px';
+        msgList.style.height = '1ch';
+        logsList.style.cursor = 'default'; // 默认光标
+        msgList.style.cursor = 'pointer'; // 手形光标
+    });
+
+    msgList.addEventListener('click', function() {
+        logsList.style.height = '1ch';
+        msgList.style.height = '300px';
+
+        logsList.style.cursor = 'pointer'; // 手形光标
+        msgList.style.cursor = 'default'; // 默认光标
+    });
+});
+
     </script>
 </head>
 <body>
