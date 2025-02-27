@@ -148,14 +148,25 @@ async function logMessage(message, type = 'system') {
                 completed=true;
                 chunks+="\n";
             }
+            if(message.includes("WebSocket connection opened")){
+                stopPlayChunk();
+                disconnectFromWebsocket();
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('msg-div');
+                msglist.appendChild(msgDiv);
+                let text="你好呀，我来了。";
+                msglist.lastElementChild.textContent=text;
+                playChunk(text,2,0,0,false);
+            }
             if(message.includes("WebSocket connection closed")){
                 stopPlayChunk();
                 disconnectFromWebsocket();
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
                 msglist.appendChild(msgDiv);
-                msglist.lastElementChild.textContent="您已经断开与智能助理的连接";
-                playChunk("您已经断开与智能助理的连接",2,0,0,false);
+                let text="您已经断开与智能助理的连接。";
+                msglist.lastElementChild.textContent=text;
+                playChunk(text,2,0,0,false);
             }
             break;
         case 'user':
