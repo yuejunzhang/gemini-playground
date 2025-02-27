@@ -17,7 +17,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const logsList = document.getElementById("logs-container");
     const msgList = document.getElementById("msg-list");
-
+    const video_container = document.getElementById("video-container");
     // 初始设置
     logsList.style.cursor = 'pointer'; // 手形光标
     msgList.style.cursor = 'default';  // 默认光标
@@ -30,9 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     msgList.addEventListener('click', function() {
-        logsList.style.height = '1ch';
+        // logsList.style.height = '1ch';
         msgList.style.height = '250px';
-
+        video_container.style.height = '250px';
         logsList.style.cursor = 'pointer'; // 手形光标
         msgList.style.cursor = 'default'; // 默认光标
     });
@@ -42,11 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </head>
 <body>
     <div id="app">
-        <div class="settings">
-            <button id="connect-button">Connect</button>
-            <input type="password" id="api-key" placeholder="Please Input Gemini API Key" />
-            <button id="config-toggle" class="material-symbols-outlined">settings</button>
-        </div>
+
         <div id="config-container" class="hidden-mobile">
             <div class="config-wrapper">
                 <div class="setting-container">
@@ -94,15 +90,18 @@ document.addEventListener('DOMContentLoaded', function() {
         <input type="text" id="message-input" placeholder="Enter message...">
         <button id="send-button">Send</button>
         </div>
+        <div class="settings">
         <button id="mic-button">
             <span id="mic-icon" class="material-symbols-outlined">mic</span>
         </button>
+        <button id="connect-button">Connect</button>
         <button id="camera-button">
             <span id="camera-icon" class="material-symbols-outlined">videocam</span>
         </button>
         <button id="screen-button" style="display: none;">
             <span id="screen-icon" class="material-symbols-outlined">screen_share</span>
         </button>
+        </div>
         <div class="audio-visualizers">
             <div class="visualizer-container">
                 <label>Input Audio</label>
@@ -113,7 +112,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div id="audio-visualizer"></div>
             </div>
         </div>
-
+        <div class="settings">
+            
+            <input type="password" id="api-key" placeholder="Please Input Gemini API Key" />
+            <button id="config-toggle" class="material-symbols-outlined">settings</button>
+        </div>
         <div id="screen-container" style="display: none;">
             <video id="screen-preview" playsinline autoplay muted></video>
             <button class="close-button material-symbols-outlined">close</button>
