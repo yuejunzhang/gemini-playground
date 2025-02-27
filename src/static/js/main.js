@@ -168,6 +168,9 @@ async function logMessage(message, type = 'system') {
                 msglist.lastElementChild.textContent=text;
                 playChunk(text,2,0,0,false);
             }
+            if(message.includes("Camera started")){
+                video_container.style.height = '250px';
+            }
             break;
         case 'user':
             emoji.textContent = '🫵';
