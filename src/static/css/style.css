@@ -72,6 +72,7 @@ body {
     word-wrap: break-word;
     margin-bottom: 20px;
     filter: drop-shadow(1px 1px 2px #ffffff);
+    background-color: #54c5b0;
 }
 .log-entry {
     font-size: 0.9em;
