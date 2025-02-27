@@ -42,7 +42,7 @@ export class VideoManager {
         this.FRAME_INTERVAL = 200;   // Minimum ms between frames
         this.FORCE_FRAME_INTERVAL = 10; // Send frame every N frames regardless of motion
 
-        this.setupFramePreview();
+        // this.setupFramePreview();
 
         // 摄像头状态，用户切换镜头
         this.facingMode = 'user';
