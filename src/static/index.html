@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     msgList.style.cursor = 'default';  // 默认光标
 
     logsList.addEventListener('click', function() {
-        logsList.style.height = '300px';
+        logsList.style.height = '250px';
         msgList.style.height = '1ch';
         logsList.style.cursor = 'default'; // 默认光标
         msgList.style.cursor = 'pointer'; // 手形光标
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     msgList.addEventListener('click', function() {
         logsList.style.height = '1ch';
-        msgList.style.height = '300px';
+        msgList.style.height = '250px';
 
         logsList.style.cursor = 'pointer'; // 手形光标
         msgList.style.cursor = 'default'; // 默认光标
@@ -75,7 +75,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button id="apply-config">Confirm</button>
             </div>
         </div>
-        
+        <div id="video-container" style="display: flex;">
+            <video id="preview" playsinline autoplay muted></video>
+            <div class="video-controls">
+                <button id="stop-video">Stop Video</button>
+                <button id="flip-camera">
+                    <span class="material-symbols-outlined">flip_camera_ios</span>
+                </button>
+            </div>
+        </div>
         <div id="logs-container">系统消息</div>
         <div id="msg-list">
             对话消息
@@ -91,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <button id="camera-button">
             <span id="camera-icon" class="material-symbols-outlined">videocam</span>
         </button>
-        <button id="screen-button">
+        <button id="screen-button" style="display: none;">
             <span id="screen-icon" class="material-symbols-outlined">screen_share</span>
         </button>
         <div class="audio-visualizers">
@@ -99,20 +107,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 <label>Input Audio</label>
                 <div id="input-audio-visualizer"></div>
             </div>
-            <div class="visualizer-container">
+            <div class="visualizer-container" style="display: none;">
                 <label>Output Audio</label>
                 <div id="audio-visualizer"></div>
             </div>
         </div>
-        <div id="video-container" style="display: none;">
-            <video id="preview" playsinline autoplay muted></video>
-            <div class="video-controls">
-                <button id="stop-video">Stop Video</button>
-                <button id="flip-camera">
-                    <span class="material-symbols-outlined">flip_camera_ios</span>
-                </button>
-            </div>
-        </div>
+
         <div id="screen-container" style="display: none;">
             <video id="screen-preview" playsinline autoplay muted></video>
             <button class="close-button material-symbols-outlined">close</button>
