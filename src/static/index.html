@@ -23,12 +23,14 @@ document.addEventListener('DOMContentLoaded', function() {
     msgList.style.cursor = 'default';  // 默认光标
     video_container.addEventListener('click', function() {
         // 检查元素是否已经应用了 height: inherit
-        if (video_container.style.height  === 'inherit') {
+        if (video_container.style.height  === '250px') {
             // 移除 height: inherit
-            video_container.style.height = '';
+            video_container.style.height = '350px';
+            msgList.style.height = '150px';
         } else {
             // 设置 height: inherit
-            video_container.style.height = 'inherit';
+            video_container.style.height = '250px';
+            msgList.style.height = '250px';
         }
     });
     // logsList.addEventListener('click', function() {
