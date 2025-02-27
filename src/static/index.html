@@ -21,21 +21,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始设置
     logsList.style.cursor = 'pointer'; // 手形光标
     msgList.style.cursor = 'default';  // 默认光标
-
-    logsList.addEventListener('click', function() {
-        logsList.style.height = '250px';
-        msgList.style.height = '1ch';
-        logsList.style.cursor = 'default'; // 默认光标
-        msgList.style.cursor = 'pointer'; // 手形光标
+    video_container.addEventListener('click', function() {
+        // 检查元素是否已经应用了 height: inherit
+        if (window.getComputedStyle(video_container).height === 'inherit') {
+            // 移除 height: inherit
+            video_container.style.height = '';
+        } else {
+            // 设置 height: inherit
+            video_container.style.height = 'inherit';
+        }
     });
+    // logsList.addEventListener('click', function() {
+    //     logsList.style.height = '250px';
+    //     msgList.style.height = '1ch';
+    //     logsList.style.cursor = 'default'; // 默认光标
+    //     msgList.style.cursor = 'pointer'; // 手形光标
+    // });
 
-    msgList.addEventListener('click', function() {
-        // logsList.style.height = '1ch';
-        msgList.style.height = '250px';
-        video_container.style.height = '250px';
-        logsList.style.cursor = 'pointer'; // 手形光标
-        msgList.style.cursor = 'default'; // 默认光标
-    });
+    // msgList.addEventListener('click', function() {
+    //     // logsList.style.height = '1ch';
+    //     msgList.style.height = '250px';
+    //     video_container.style.height = '250px';
+    //     logsList.style.cursor = 'pointer'; // 手形光标
+    //     msgList.style.cursor = 'default'; // 默认光标
+    // });
+    
 });
 
     </script>
@@ -86,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="msg-div"></div>
         </div>
         <div id="logs-container" style="display: none;">系统消息</div>
-        <div style="display: flex; justify-content: space-between;">
+        <div style="display: flex; justify-content: space-between;margin-bottom: 10px;">
         <input type="text" id="message-input" placeholder="Enter message...">
         <button id="send-button">Send</button>
         </div>
