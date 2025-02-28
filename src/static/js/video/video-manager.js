@@ -60,6 +60,7 @@ export class VideoManager {
         
         // 在构造函数中直接绑定事件
         this.flipCameraButton.addEventListener('click', async () => {
+            event.stopPropagation(); // 阻止事件冒泡
             try {
                 await this.flipCamera();
             } catch (error) {
