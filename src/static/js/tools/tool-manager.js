@@ -2,7 +2,7 @@ import { Logger } from '../utils/logger.js';
 import { ApplicationError, ErrorCodes } from '../utils/error-boundary.js';
 import { GoogleSearchTool } from './google-search.js';
 import { WeatherTool } from './weather-tool.js';
-import { disconnect_session } from './disconnect-tool.js';
+import { DisconnectTool } from './disconnect-tool.js';
 
 /**
  * Manages the registration and execution of tools.
