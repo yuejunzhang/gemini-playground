@@ -211,6 +211,7 @@ body {
     /* max-height: 300px; */
     max-height: 70vh;
     height: inherit;
+    transform: scaleX(-1); /* 水平翻转 */
 }
 
 .video-controls {
