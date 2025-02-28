@@ -112,7 +112,7 @@ var chunks=""
 console.log(chunk);
         if (chunk) {
             // 播放句子
-            await playChunk(chunk,2,0,0,false);
+            await playChunk(chunk, voiceSelect.selectedIndex, 0, 0, false);
             // if(chunks==""){
             //     playChunk(".",2,0,0,false);
             //     playChunk(".",2,0,0,false);
@@ -156,7 +156,7 @@ async function logMessage(message, type = 'system') {
                 msglist.appendChild(msgDiv);
                 let text="你好呀，我来了。";
                 msglist.lastElementChild.textContent=text;
-                playChunk(text,2,0,0,false);
+                playChunk(text,voiceSelect.selectedIndex,0,0,false);
             }
             if(message.includes("WebSocket connection closed")){
                 stopPlayChunk();
@@ -166,7 +166,7 @@ async function logMessage(message, type = 'system') {
                 msglist.appendChild(msgDiv);
                 let text="您已经断开与智能助理的连接。";
                 msglist.lastElementChild.textContent=text;
-                playChunk(text,2,0,0,false);
+                playChunk(text,voiceSelect.selectedIndex,0,0,false);
             }
             if(message.includes("Camera started")){
                 document.getElementById("video-container").style.height = '250px';
