@@ -44,6 +44,7 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
     scroll-behavior: smooth;
+    min-height: 1ch;
 }
 
 #logs-container:hover, #msg-list:hover {
@@ -53,7 +54,7 @@ body {
     flex: 1; 
     border: 1px solid #ccc;
     /* height: 250px; */
-    /* overflow-y: auto; */
+    overflow-y: auto;
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 8px;
@@ -62,6 +63,7 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
     scroll-behavior: smooth;
+    min-height: 1ch;
 }
 .msg-div{
     border: 1px solid #dbd9e0;
