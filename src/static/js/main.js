@@ -657,10 +657,6 @@ document.addEventListener('aiDisconnect', async (event) => {
     // 记录日志
     Logger.info('AI主动断开连接', { reason, saveHistory });
     
-    // 如果需要保存历史记录
-    if (saveHistory) {
-        Logger.export();
-    }
     
     // 更新UI状态
     // const connectButton = document.getElementById('connect-button');

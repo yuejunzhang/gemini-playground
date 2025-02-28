@@ -11,10 +11,6 @@ export class DisconnectTool {
                     reason: {
                         type: "string",
                         description: "断开连接的原因"
-                    },
-                    saveHistory: {
-                        type: "boolean",
-                        description: "是否保存对话历史"
                     }
                 },
                 required: ["reason"]
@@ -30,7 +26,6 @@ export class DisconnectTool {
             const disconnectEvent = new CustomEvent('aiDisconnect', {
                 detail: {
                     reason: args.reason,
-                    saveHistory: args.saveHistory ?? false
                 }
             });
 
