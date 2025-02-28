@@ -23,7 +23,7 @@ export class ToolManager {
     registerDefaultTools() {
         this.registerTool('googleSearch', new GoogleSearchTool());
         this.registerTool('weather', new WeatherTool());
-        this.registerTool('DisconnectTool', new DisconnectTool());
+        this.registerTool('disconnect', new DisconnectTool());
     }
 
     /**
