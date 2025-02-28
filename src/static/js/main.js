@@ -555,7 +555,7 @@ async function handleVideoToggle() {
             await videoManager.start(fpsInput.value,(frameData) => {
                 if (isConnected ) {
                     client.sendRealtimeInput([frameData]);
-                    console.log("send frameData");
+                    logMessage('send frameData', 'system');
                 }
             });
 
