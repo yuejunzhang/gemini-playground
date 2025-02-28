@@ -23,7 +23,7 @@ export class ToolManager {
     registerDefaultTools() {
         this.registerTool('googleSearch', new GoogleSearchTool());
         this.registerTool('weather', new WeatherTool());
-        this.registerTool('disconnect', new DisconnectTool());
+        this.registerTool('disconnect_session', new DisconnectTool());
     }
 
     /**
@@ -55,7 +55,7 @@ export class ToolManager {
         
         this.tools.forEach((tool, name) => {
             if (tool.getDeclaration) {
-                if (name === 'weather'|| name === 'disconnect') {
+                if (name === 'weather'|| name === 'disconnect_session') {
                     allDeclarations.push({
                         functionDeclarations: tool.getDeclaration()
                     });
