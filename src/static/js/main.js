@@ -651,29 +651,29 @@ screenButton.disabled = true;
 // ...existing code...
 
 // 监听 AI 触发的断开连接事件
-document.addEventListener('aiDisconnect', async (event) => {
-    const { reason, saveHistory } = event.detail;
+// document.addEventListener('aiDisconnect', async (event) => {
+//     const { reason, saveHistory } = event.detail;
     
-    // 记录日志
-    Logger.info('AI主动断开连接', { reason, saveHistory });
+//     // 记录日志
+//     Logger.info('AI主动断开连接', { reason, saveHistory });
     
-    // 如果需要保存历史记录
-    if (saveHistory) {
-        Logger.export();
-    }
+//     // 如果需要保存历史记录
+//     if (saveHistory) {
+//         Logger.export();
+//     }
     
-    // 更新UI状态
-    // const connectButton = document.getElementById('connect-button');
-    // connectButton.textContent = '连接';
-    // connectButton.classList.remove('connected');
+//     // 更新UI状态
+//     // const connectButton = document.getElementById('connect-button');
+//     // connectButton.textContent = '连接';
+//     // connectButton.classList.remove('connected');
     
-    // 显示断开原因
-    logMessage(`AI断开连接：${reason}`, 'system');
+//     // 显示断开原因
+//     logMessage(`AI断开连接：${reason}`, 'system');
     
-    // 执行断开连接
-    if (client && client.ws) {
-        await client.disconnect();
-    }
+//     // 执行断开连接
+//     if (client && client.ws) {
+//         await client.disconnect();
+//     }
     
-    isConnected = false;
-});
+//     isConnected = false;
+// });
