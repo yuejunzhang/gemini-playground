@@ -228,7 +228,11 @@ export class VideoManager {
 
         try {
             Logger.info('Flipping camera');
-            this.facingMode = this.facingMode === 'user' ? 'environment' : 'user';         
+            this.facingMode = this.facingMode === 'user' ? 'environment' : 'user';    
+                    // 切换摄像头时自动处理镜像
+        this.previewVideo.style.transform = this.facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
+        this.framePreview.style.transform = this.facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
+             
             this.stop();
             await this.start(this.fps,this.onFrame);
             Logger.info('Camera flipped successfully');
