@@ -2,6 +2,7 @@ import { Logger } from '../utils/logger.js';
 import { ApplicationError, ErrorCodes } from '../utils/error-boundary.js';
 import { GoogleSearchTool } from './google-search.js';
 import { WeatherTool } from './weather-tool.js';
+import { DisconnectTool } from './disconnect-tool.js';
 
 /**
  * Manages the registration and execution of tools.
@@ -22,6 +23,7 @@ export class ToolManager {
     registerDefaultTools() {
         this.registerTool('googleSearch', new GoogleSearchTool());
         this.registerTool('weather', new WeatherTool());
+        this.registerTool('weather', new DisconnectTool());
     }
 
     /**
