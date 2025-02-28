@@ -266,6 +266,7 @@ async function ensureAudioInitialized() {
  * Handles the microphone toggle. Starts or stops audio recording.
  * @returns {Promise<void>}
  */
+let inputVolume = 0;
 async function handleMicToggle() {
     if (!isRecording) {
         try {
@@ -291,7 +292,7 @@ async function handleMicToggle() {
                 }
                 
                 inputAnalyser.getByteFrequencyData(inputDataArray);
-                const inputVolume = Math.max(...inputDataArray) / 255;
+                inputVolume = Math.max(...inputDataArray) / 255;
                 updateAudioVisualizer(inputVolume, true);
             });
 
@@ -550,9 +551,9 @@ async function handleVideoToggle() {
             if (!videoManager) {
                 videoManager = new VideoManager();
             }
-            
+            //在此通过检测音频输入流强度inputAudioVisualizer超阈值时才发送截图，避免实时发送截图（非实时场景，可加开关）
             await videoManager.start(fpsInput.value,(frameData) => {
-                if (isConnected) {
+                if (isConnected && inputVolume > 0.3) {
                     client.sendRealtimeInput([frameData]);
                 }
             });
