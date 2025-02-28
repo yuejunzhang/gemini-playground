@@ -378,6 +378,9 @@ async function connectToWebsocket() {
         cameraButton.disabled = false;
         screenButton.disabled = false;
         logMessage('Connected to Gemini 2.0 Flash Multimodal Live API', 'system');
+                // 自动启动视频和麦克风
+                await handleVideoToggle();
+                await handleMicToggle();
     } catch (error) {
         const errorMessage = error.message || 'Unknown error';
         Logger.error('Connection error:', error);
