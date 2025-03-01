@@ -296,6 +296,11 @@ async function handleMicToggle() {
                 
                 inputAnalyser.getByteFrequencyData(inputDataArray);
                 inputVolume = Math.max(...inputDataArray) / 255;
+                if (inputVolume > 0.5) {
+                    stopPlayChunk();//打断播报
+                    audioElement.src = '';
+                    audioElement.load();
+                }
                 updateAudioVisualizer(inputVolume, true);
             });
 
