@@ -1,6 +1,7 @@
 import { Logger } from '../utils/logger.js';
 import { VideoRecorder } from './video-recorder.js';
 import { ApplicationError, ErrorCodes } from '../utils/error-boundary.js';
+import{audioVolume,isRecording} from '../main.js';
 
 /**
  * @fileoverview Manages video capture and processing with motion detection and frame preview.
@@ -36,9 +37,10 @@ export class VideoManager {
         this.lastFrameTime = 0;
         this.videoRecorder = null;
         this.isActive = false;
-
+        this.previousVolume = 0;
+        this.previousVideoDiff = 0;
         // Configuration
-        this.MOTION_THRESHOLD = 10;  // Minimum pixel difference to detect motion
+        this.MOTION_THRESHOLD = 0.5;  //已经修改为变化率 Minimum pixel difference to detect motion
         this.FRAME_INTERVAL = 200;   // Minimum ms between frames
         this.FORCE_FRAME_INTERVAL = 10; // Send frame every N frames regardless of motion
 
@@ -115,12 +117,53 @@ export class VideoManager {
             const rDiff = Math.abs(prevFrame[i] - currentFrame[i]);
             const gDiff = Math.abs(prevFrame[i + 1] - currentFrame[i + 1]);
             const bDiff = Math.abs(prevFrame[i + 2] - currentFrame[i + 2]);
-            diff += (rDiff + gDiff + bDiff) / 3;
+            diff += Math.max(rDiff, gDiff, bDiff);
         }
-
-        return diff / (pixelsToCheck / skipPixels);
+        let diff2 = diff - this.previousVideoDiff;
+        this.previousVideoDiff = diff;
+        return diff2 /(pixelsToCheck / skipPixels);
+    }
+    detectMotionByHistogram(prevFrame, currentFrame, bins = 32) {
+        // 计算灰度直方图
+        const getHistogram = (frame) => {
+            const histogram = new Array(bins).fill(0);
+            for (let i = 0; i < frame.length; i += 4) {
+                // 转换为灰度值
+                const gray = (frame[i] * 0.299 + frame[i + 1] * 0.587 + frame[i + 2] * 0.114);
+                const bin = Math.floor(gray * bins / 256);
+                histogram[bin]++;
+            }
+            return histogram;
+        };
+    
+        const hist1 = getHistogram(prevFrame);
+        const hist2 = getHistogram(currentFrame);
+    
+        // 计算直方图差异
+        let diff = 0;
+        for (let i = 0; i < bins; i++) {
+            diff += Math.abs(hist1[i] - hist2[i]);
+        }
+    
+        return diff / (prevFrame.length / 4);
     }
 
+// 检测音量变化的函数
+detectVolumeChange() {
+    if(isRecording==false){
+        return 0;
+    }
+    const currentVolume=audioVolume;
+    const change = currentVolume - this.previousVolume ;
+    this.previousVolume = currentVolume;
+    if (change > 0.5) {
+        return 1;
+      } else if(change < -0 && currentVolume==0) {
+        return -1;
+      }else {
+      return 0;
+    }
+  }
     /**
      * Starts video capture and processing
      * @param {Function} onFrame - Callback for processed frames
@@ -141,13 +184,17 @@ export class VideoManager {
                     //Logger.debug('Skipping frame - inactive');
                     return;
                 }
-
+//在此通过检测音频输入流强度inputAudioVisualizer超阈值时才发送截图，避免实时发送截图（非实时场景，可加开关）
                 const currentTime = Date.now();
                 if (currentTime - this.lastFrameTime < this.FRAME_INTERVAL) {
                     return;
                 }
+                if(this.detectVolumeChange()<=0){
+                    return;
+                }
+                    this.processFrame(base64Data, onFrame);
+                
 
-                this.processFrame(base64Data, onFrame);
             });
 
             this.isActive = true;
@@ -179,11 +226,10 @@ export class VideoManager {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            
             if (this.lastFrameData) {
                 const motionScore = this.detectMotion(this.lastFrameData, imageData.data);
                 if (motionScore < this.MOTION_THRESHOLD && this.frameCount % this.FORCE_FRAME_INTERVAL !== 0) {
-                    //Logger.debug(`Skipping frame - low motion (score: ${motionScore})`);
+                    Logger.debug(`Skipping frame - low motion (score: ${motionScore})`);
                     return;
                 }
             }
@@ -244,6 +290,31 @@ export class VideoManager {
                 ErrorCodes.VIDEO_FLIP_FAILED,
                 { originalError: error }
             );
+        }
+    }
+
+    async captureCurrentFrame() {
+        if (!this.previewVideo || !this.previewVideo.videoWidth) {
+            return null;
+        }
+    
+        try {
+            const canvas = document.createElement('canvas');
+            canvas.width = this.previewVideo.videoWidth;
+            canvas.height = this.previewVideo.videoHeight;
+            const ctx = canvas.getContext('2d');
+            
+            // 绘制当前视频帧
+            ctx.drawImage(this.previewVideo, 0, 0);
+            
+            // 转换为base64
+            return {
+                mimeType: "image/jpeg",
+                data: canvas.toDataURL('image/jpeg', 0.8).split(',')[1]
+            };
+        } catch (error) {
+            Logger.error('Error capturing frame:', error);
+            return null;
         }
     }
 }

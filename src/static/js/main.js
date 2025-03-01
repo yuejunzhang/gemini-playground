@@ -38,12 +38,13 @@ const systemInstructionInput = document.getElementById('system-instruction');
 systemInstructionInput.value = CONFIG.SYSTEM_INSTRUCTION.TEXT;
 const applyConfigButton = document.getElementById('apply-config');
 const responseTypeSelect = document.getElementById('response-type-select');
-
+export let audioVolume=0 ;
 // Load saved values from localStorage
 const savedApiKey = localStorage.getItem('gemini_api_key');
 const savedVoice = localStorage.getItem('gemini_voice');
 const savedFPS = localStorage.getItem('video_fps');
 const savedSystemInstruction = localStorage.getItem('system_instruction');
+
 
 
 if (savedApiKey) {
@@ -73,7 +74,7 @@ applyConfigButton.addEventListener('click', () => {
 });
 
 // State variables
-let isRecording = false;
+export let isRecording = false;
 let audioStreamer = null;
 let audioCtx = null;
 let isConnected = false;
@@ -112,7 +113,9 @@ var chunks=""
 console.log(chunk);
         if (chunk) {
             // 播放句子
-            await playChunk(chunk, voiceSelect.selectedIndex, 0, 0, false);
+            if (voiceSelect.value !== 'none') {
+                await playChunk(chunk, voiceSelect.selectedIndex, 0, 0, false);
+            }
             // if(chunks==""){
             //     playChunk(".",2,0,0,false);
             //     playChunk(".",2,0,0,false);
@@ -156,7 +159,7 @@ async function logMessage(message, type = 'system') {
                 msglist.appendChild(msgDiv);
                 let text="你好呀，我来了。";
                 msglist.lastElementChild.textContent=text;
-                playChunk(text,voiceSelect.selectedIndex,0,0,false);
+                if (voiceSelect.value !== 'none') playChunk(text,voiceSelect.selectedIndex,0,0,false);
             }
             if(message.includes("WebSocket connection closed")){
                 stopPlayChunk();
@@ -166,7 +169,7 @@ async function logMessage(message, type = 'system') {
                 msglist.appendChild(msgDiv);
                 let text="您已经断开与智能助理的连接。";
                 msglist.lastElementChild.textContent=text;
-                playChunk(text,voiceSelect.selectedIndex,0,0,false);
+                if (voiceSelect.value !== 'none') playChunk(text,voiceSelect.selectedIndex,0,0,false);
             }
             if(message.includes("Camera started")){
                 document.getElementById("video-container").style.height = '250px';
@@ -236,7 +239,7 @@ function updateAudioVisualizer(volume, isInput = false) {
         audioBar.classList.add('audio-bar');
         visualizer.appendChild(audioBar);
     }
-    
+    audioVolume =  volume;
     audioBar.style.width = `${volume * 100}%`;
     if (volume > 0) {
         audioBar.classList.add('active');
@@ -433,15 +436,48 @@ function disconnectFromWebsocket() {
 /**
  * Handles sending a text message.
  */
-function handleSendMessage() {
+// function handleSendMessage() {
+//     const message = messageInput.value.trim();
+//     if (message) {
+//         client.sendRealtimeInput([{ mimeType: 'text/plain', data: message }]);
+//         logMessage(message, 'user');
+//         client.send({ text: message });
+//         messageInput.value = '';
+//     }
+// }
+
+async function handleSendMessage() {
     const message = messageInput.value.trim();
     if (message) {
-        logMessage(message, 'user');
-        client.send({ text: message });
-        messageInput.value = '';
+        try {
+            const parts = [{ text: message }];
+
+            // 如果视频激活，添加视频帧
+            if (isVideoActive && videoManager) {
+                const frameData = await videoManager.captureCurrentFrame();
+                if (frameData) {
+                    parts.push({
+                        inlineData: {
+                            mimeType: frameData.mimeType,
+                            data: frameData.data
+                        }
+                    });
+                    Logger.info('已添加视频帧到消息');
+                }
+            }
+
+            // 发送文本和图片
+            logMessage(message, 'user');
+            await client.send(parts);
+            messageInput.value = '';
+            Logger.info('消息发送完成');
+            
+        } catch (error) {
+            Logger.error('发送消息失败:', error);
+            logMessage(`发送失败: ${error.message}`, 'system');
+        }
     }
 }
-
 // Event Listeners
 client.on('open', () => {
     logMessage('WebSocket connection opened', 'system');
@@ -555,7 +591,8 @@ async function handleVideoToggle() {
             await videoManager.start(fpsInput.value,(frameData) => {
                 if (isConnected ) {
                     client.sendRealtimeInput([frameData]);
-                    console.log( "\nsend frameData======");
+                    console.log("图片发送成功=================");
+
                 }
             });
 
