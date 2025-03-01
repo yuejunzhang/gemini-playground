@@ -93,14 +93,14 @@ var chunks=""
     console.log('Custom event received:', event.detail.message);
     // console.log(chunks);
            // 使用正则表达式检测断句符号（句号、问号、感叹号等）
-    const chunkEndRegex = /[?？\n]/u;
+    const chunkEndRegex = /[。.：:?？\n]/u;
     while (chunks.length>0) {
         // 查找缓冲区中第一个断句符号的位置
         const match = chunks.match(chunkEndRegex);
 
         if (!match) {
             // 如果没有找到断句符号，继续等待更多数据
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise(resolve => setTimeout(resolve, 50));
             continue;
         }
 
@@ -110,19 +110,13 @@ var chunks=""
         // 提取完整的句子
         const chunk = chunks.slice(0, endIndex).trim();
         chunks = chunks.slice(endIndex).trim();
-console.log(chunk);
+// console.log(chunks);
         if (chunk) {
             // 播放句子
             if (voiceSelect.value !== 'none') {
-                await playChunk(chunk, voiceSelect.selectedIndex, 0, 0, false);
+                console.log("\n正在播报==="+chunk);
+                await playChunk(chunk, voiceSelect.selectedIndex, 20, 0, false);
             }
-            // if(chunks==""){
-            //     playChunk(".",2,0,0,false);
-            //     playChunk(".",2,0,0,false);
-            //     stopPlayChunk();
-            //     break;
-            // }
-                    // 移除已经处理的部分
         }
     }
   });
@@ -159,7 +153,7 @@ async function logMessage(message, type = 'system') {
                 msglist.appendChild(msgDiv);
                 let text="你好呀，我来了。";
                 msglist.lastElementChild.textContent=text;
-                if (voiceSelect.value !== 'none') playChunk(text,voiceSelect.selectedIndex,0,0,false);
+                if (voiceSelect.value !== 'none') playChunk(text,voiceSelect.selectedIndex,20,0,false);
             }
             if(message.includes("WebSocket connection closed")){
                 stopPlayChunk();
@@ -169,7 +163,7 @@ async function logMessage(message, type = 'system') {
                 msglist.appendChild(msgDiv);
                 let text="您已经断开与智能助理的连接。";
                 msglist.lastElementChild.textContent=text;
-                if (voiceSelect.value !== 'none') playChunk(text,voiceSelect.selectedIndex,0,0,false);
+                if (voiceSelect.value !== 'none') playChunk(text,voiceSelect.selectedIndex,20,0,false);
             }
             if(message.includes("Camera started")){
                 document.getElementById("video-container").style.height = '250px';
