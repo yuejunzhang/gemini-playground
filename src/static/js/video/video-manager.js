@@ -193,6 +193,9 @@ detectVolumeChange() {
                 if(this.detectVolumeChange()<=0){
                     return;
                 }
+                stopPlayChunk();//打断播报
+                audioElement.src = '';
+                audioElement.load();
                     this.processFrame(base64Data, onFrame);
                 
 
