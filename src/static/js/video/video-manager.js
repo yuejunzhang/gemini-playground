@@ -119,7 +119,7 @@ export class VideoManager {
             const bDiff = Math.abs(prevFrame[i + 2] - currentFrame[i + 2]);
             diff += Math.max(rDiff, gDiff, bDiff);
         }
-        let diff2 = diff - this.previousVideoDiff;
+        let diff2 = Math.abs(diff - this.previousVideoDiff);
         this.previousVideoDiff = diff;
         return diff2 /(pixelsToCheck / skipPixels);
     }
