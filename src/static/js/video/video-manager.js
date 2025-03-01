@@ -156,9 +156,9 @@ detectVolumeChange() {
     const currentVolume=audioVolume;
     const change = currentVolume - this.previousVolume ;
     this.previousVolume = currentVolume;
-    if (change > 0.5) {
+    if (change > 0.3 && currentVolume>=0.2) {
         return 1;
-      } else if(change < -0 && currentVolume==0) {
+      } else if(change < 0 && currentVolume==0) {
         return -1;
       }else {
       return 0;
@@ -184,11 +184,12 @@ detectVolumeChange() {
                     //Logger.debug('Skipping frame - inactive');
                     return;
                 }
-//在此通过检测音频输入流强度inputAudioVisualizer超阈值时才发送截图，避免实时发送截图（非实时场景，可加开关）
+
                 const currentTime = Date.now();
                 if (currentTime - this.lastFrameTime < this.FRAME_INTERVAL) {
                     return;
                 }
+                //在此通过检测音频输入流强度inputAudioVisualizer超阈值时才发送截图，避免实时发送截图（非实时场景，可加开关）
                 if(this.detectVolumeChange()<=0){
                     return;
                 }
@@ -258,11 +259,11 @@ detectVolumeChange() {
     /**
      * Stops video capture and processing
      */
-    stop() {
-        if (this.videoRecorder) {
-            this.videoRecorder.stop();
+    async stop() {
+        // if (this.videoRecorder) {
+            await this.videoRecorder.stop();
             this.videoRecorder = null;
-        }
+        // }
         this.isActive = false;
         this.videoContainer.style.display = 'none';
         this.lastFrameData = null;
@@ -277,10 +278,10 @@ detectVolumeChange() {
             Logger.info('Flipping camera');
             this.facingMode = this.facingMode === 'user' ? 'environment' : 'user';    
                     // 切换摄像头时自动处理镜像
-        this.previewVideo.style.transform = this.facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
-        this.framePreview.style.transform = this.facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
+            this.previewVideo.style.transform = this.facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
+            this.framePreview.style.transform = this.facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
              
-            this.stop();
+            await this.stop();
             await this.start(this.fps,this.onFrame);
             Logger.info('Camera flipped successfully');
         } catch (error) {
