@@ -40,7 +40,7 @@ export class VideoManager {
         this.previousVolume = 0;
         this.previousVideoDiff = 0;
         // Configuration
-        this.MOTION_THRESHOLD = 0.5;  //已经修改为变化率 Minimum pixel difference to detect motion
+        this.MOTION_THRESHOLD = 0.4;  //已经修改为变化率 Minimum pixel difference to detect motion
         this.FRAME_INTERVAL = 200;   // Minimum ms between frames
         this.FORCE_FRAME_INTERVAL = 10; // Send frame every N frames regardless of motion
 
