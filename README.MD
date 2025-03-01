@@ -61,6 +61,10 @@ Mac/Linux 安装Deno:
 >cd 项目目录 <br>
 >deno run --allow-net --allow-read src/deno_index.ts
 
+仅调试客户端：
+websocket-clent.js 中修改
+const host = window.location.host; //部署时
+const host = "yuejunzhang-gemini.deno.dev";//仅调试客户端
 
 ## 使用方法
 ### 多模态对话
