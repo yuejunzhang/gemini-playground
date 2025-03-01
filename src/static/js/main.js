@@ -146,7 +146,7 @@ async function logMessage(message, type = 'system') {
                 chunks+="\n";
             }
             if(message.includes("WebSocket connection opened")){
-                stopPlayChunk();
+                stopPlay();
                 disconnectFromWebsocket();
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
@@ -156,7 +156,7 @@ async function logMessage(message, type = 'system') {
                 if (voiceSelect.value !== 'none') playChunk(text,voiceSelect.selectedIndex,20,0,false);
             }
             if(message.includes("WebSocket connection closed")){
-                stopPlayChunk();
+                stopPlay();
                 disconnectFromWebsocket();
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
@@ -178,7 +178,7 @@ async function logMessage(message, type = 'system') {
                 completed=false;
                 chunks="";
                 // playChunk(".",2,0,0,false);
-                stopPlayChunk();
+                stopPlay();
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
                 msglist.appendChild(msgDiv);
@@ -291,7 +291,7 @@ async function handleMicToggle() {
                 inputAnalyser.getByteFrequencyData(inputDataArray);
                 inputVolume = Math.max(...inputDataArray) / 255;
                 // if (inputVolume > 0.5) {
-                //     stopPlayChunk();//打断播报
+                //     stopPlay();//打断播报
                 //     audioElement.src = '';
                 //     audioElement.load();
                 // }
@@ -719,3 +719,15 @@ document.addEventListener('aiDisconnect', async (event) => {
     
     isConnected = false;
 });
+function stopPlay(){
+    chunks=""
+    stopPlayChunk();
+    var customEvent = new CustomEvent('NewChunks', {
+        detail: { message:  "new chunks" },
+        bubbles: true,
+        cancelable: true
+    });
+    document.dispatchEvent(customEvent);
+    // audioElement.src = '';
+    // audioElement.load();
+}
