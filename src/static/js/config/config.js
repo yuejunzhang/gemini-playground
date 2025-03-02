@@ -1,3 +1,17 @@
+
+let sampleRate = 16000;
+isFirefox() ;
+function isFirefox() {
+if (typeof InstallTrigger !== 'undefined') {
+      console.log('This is Firefox');
+      sampleRate=48000
+  } else {
+      console.log('This is not Firefox');
+      sampleRate = 16000;
+      
+  }
+}
+
 export const CONFIG = {
     API: {
         VERSION: 'v1alpha',
@@ -9,7 +23,7 @@ export const CONFIG = {
     },
     // Default audio settings
     AUDIO: {
-        SAMPLE_RATE: 16000,
+        SAMPLE_RATE: sampleRate,
         OUTPUT_SAMPLE_RATE: 24000,      // If you want to have fun, set this to around 14000 (u certainly will)
         BUFFER_SIZE: 2048,
         CHANNELS: 1
@@ -19,5 +33,7 @@ export const CONFIG = {
     //     IP_ADDRESS: '192.168.1.4'
     // }
   };
-  
+
   export default CONFIG; 
+//   const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+// console.log(audioContext.sampleRate); // 动态获取设备的采样率

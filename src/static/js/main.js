@@ -5,7 +5,7 @@ import { CONFIG } from './config/config.js';
 import { Logger } from './utils/logger.js';
 import { VideoManager } from './video/video-manager.js';
 import { ScreenRecorder } from './video/screen-recorder.js';
-// import * as edgeTTSChunk from './edge_tts_chunk.js';
+
 
 /**
  * @fileoverview Main entry point for the application.
@@ -45,7 +45,7 @@ const savedVoice = localStorage.getItem('gemini_voice');
 const savedFPS = localStorage.getItem('video_fps');
 const savedSystemInstruction = localStorage.getItem('system_instruction');
 
-
+const SAMPLE_RATE=CONFIG.AUDIO.SAMPLE_RATE;
 
 if (savedApiKey) {
     apiKeyInput.value = savedApiKey;
@@ -277,13 +277,13 @@ async function handleMicToggle() {
             await audioRecorder.start((base64Data) => {
                 if (isUsingTool) {
                     client.sendRealtimeInput([{
-                        mimeType: "audio/pcm;rate=16000",
+                        mimeType: "audio/pcm;rate=" + SAMPLE_RATE,
                         data: base64Data,
                         interrupt: true     // Model isn't interruptable when using tools, so we do it manually
                     }]);
                 } else {
                     client.sendRealtimeInput([{
-                        mimeType: "audio/pcm;rate=16000",
+                        mimeType: "audio/pcm;rate="+ SAMPLE_RATE,
                         data: base64Data
                     }]);
                 }
