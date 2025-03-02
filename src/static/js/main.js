@@ -155,8 +155,8 @@ async function logMessage(message, type = 'system') {
                 msglist.lastElementChild.textContent=text;
                 if (voiceSelect.value !== 'none') playChunk(text,voiceSelect.selectedIndex,20,0,false);
             }
-            if(message.includes("WebSocket connection closed")){
-                stopPlay();
+            if(message.includes("WebSocket connection closed")||message.includes('message.includes("WebSocket connection closed")')){
+                // stopPlay();
                 disconnectFromWebsocket();
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
@@ -696,29 +696,22 @@ screenButton.addEventListener('click', handleScreenShare);
 screenButton.disabled = true;
 // ...existing code...
 
-// 监听 AI 触发的断开连接事件
+// 监听 AI 工具触发的断开连接事件
 document.addEventListener('aiDisconnect', async (event) => {
     const { reason, saveHistory } = event.detail;
-    
     // 记录日志
     Logger.info('AI主动断开连接', { reason, saveHistory });
-    
-    
-    // 更新UI状态
-    // const connectButton = document.getElementById('connect-button');
-    // connectButton.textContent = '连接';
-    // connectButton.classList.remove('connected');
-    
     // 显示断开原因
     logMessage(`AI断开连接：${reason}`, 'system');
-    
-    // 执行断开连接
+     // 执行断开连接
     if (client && client.ws) {
         await client.disconnect();
     }
-    
     isConnected = false;
+    //更新UI状态
+    // disconnectFromWebsocket();
 });
+
 function stopPlay(){
     chunks=""
     stopPlayChunk();
