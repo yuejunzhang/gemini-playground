@@ -22,7 +22,7 @@ export class ToolManager {
      */
     registerDefaultTools() {
         this.registerTool('googleSearch', new GoogleSearchTool());
-        this.registerTool('weather', new WeatherTool());
+        this.registerTool('get_weather_on_date', new WeatherTool());
         this.registerTool('disconnect_session', new DisconnectTool());
         this.registerTool('get_Curent_DateTime', new GetCurentDateTime());
     }
@@ -56,7 +56,7 @@ export class ToolManager {
         
         this.tools.forEach((tool, name) => {
             if (tool.getDeclaration) {
-                if (name === 'weather'|| name === 'disconnect_session'|| name === 'get_Curent_DateTime') {
+                if (name === 'get_weather_on_date'|| name === 'disconnect_session'|| name === 'get_Curent_DateTime') {
                     allDeclarations.push({
                         functionDeclarations: tool.getDeclaration()
                     });
@@ -85,11 +85,11 @@ export class ToolManager {
         Logger.info(`Handling tool call: ${name}`, { args });
 
         let tool;
-        if (name === 'get_weather_on_date') {
-            tool = this.tools.get('weather');
-        } else {
+        // if (name === 'get_weather_on_date') {
+        //     tool = this.tools.get('weather');
+        // } else {
             tool = this.tools.get(name);
-        }
+        // }
 
         if (!tool) {
             throw new ApplicationError(

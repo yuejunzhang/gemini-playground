@@ -1,31 +1,30 @@
 import { Logger } from '../utils/logger.js';
-
-/**
- * Represents a tool for retrieving weather forecasts.
- * This tool provides a mock implementation for demonstration purposes.
- */
 export class WeatherTool {
-    /**
-     * Returns the tool declaration for the Gemini API.
-     * The declaration defines the function name, description, and parameters.
-     *
-     * @returns {Object[]} An array containing the function declaration for getting weather on a specific date.
-     */
+    constructor() {
+        this.API_KEY = 'SzdoTSUanNhLMxaBt';
+        this.BASE_URL = 'https://api.seniverse.com/v3/weather/daily.json';
+        this.config = {
+            language: 'zh-Hans',
+            unit: 'c',
+            days: 3,
+            start: 0
+        };
+    }
+
     getDeclaration() {
-        // Return an array of function declarations
         return [{
             name: "get_weather_on_date",
-            description: "Get the weather forecast for a specific location and date",
+            description: "获取指定城市指定日期的天气预报",
             parameters: {
                 type: "object",
                 properties: {
                     location: {
                         type: "string",
-                        description: "The location to get weather for (city name)"
+                        description: "城市名称，如：济南"
                     },
                     date: {
                         type: "string",
-                        description: "The date to get weather for (YYYY-MM-DD format)"
+                        description: "查询日期 (YYYY-MM-DD格式)"
                     }
                 },
                 required: ["location", "date"]
@@ -33,79 +32,63 @@ export class WeatherTool {
         }];
     }
 
-    /**
-     * Executes the weather tool.
-     * Generates a mock weather forecast based on the provided location and date.
-     *
-     * @param {Object} args - The arguments for the tool.
-     * @param {string} args.location - The location for the weather forecast.
-     * @param {string} args.date - The date for the weather forecast (YYYY-MM-DD).
-     * @returns {Promise<Object>} A promise that resolves with the weather forecast.
-     * @throws {Error} Throws an error if the tool execution fails.
-     */
     async execute(args) {
         try {
-            Logger.info('Executing Weather Tool', args);
+            Logger.info('正在查询天气', args);
             const { location, date } = args;
 
-            // Mock weather data
-            const weatherConditions = [
-                'sunny', 'partly cloudy', 'cloudy', 
-                'light rain', 'heavy rain', 'thunderstorm',
-                'windy', 'snow', 'foggy'
-            ];
-            
-            const temperatures = {
-                sunny: { min: 20, max: 35 },
-                'partly cloudy': { min: 18, max: 30 },
-                cloudy: { min: 15, max: 25 },
-                'light rain': { min: 12, max: 20 },
-                'heavy rain': { min: 10, max: 18 },
-                thunderstorm: { min: 15, max: 25 },
-                windy: { min: 8, max: 15 },
-                snow: { min: -5, max: 5 },
-                foggy: { min: 5, max: 15 }
-            };
-
-            // Generate consistent but pseudo-random weather based on location and date
-            const seed = this.hashString(`${location}${date}`);
-            const condition = weatherConditions[seed % weatherConditions.length];
-            const temp = temperatures[condition];
-            
-            // Add some randomness to temperature within the range
-            const currentTemp = temp.min + (seed % (temp.max - temp.min));
-
-            return {
+            // 构建 API URL
+            const url = new URL(this.BASE_URL);
+            const params = {
+                key: this.API_KEY,
                 location,
-                date,
-                condition,
-                temperature: Math.round(currentTemp),
-                humidity: 40 + (seed % 40), // Random humidity between 40-80%
-                windSpeed: 5 + (seed % 25),  // Random wind speed between 5-30 km/h
-                forecast: `The weather in ${location} on ${date} will be ${condition} with a temperature of ${Math.round(currentTemp)}°C`
+                ...this.config
+            };
+            Object.entries(params).forEach(([key, value]) => 
+                url.searchParams.append(key, value)
+            );
+
+            // 发送请求
+            const response = await fetch(url.toString());
+            if (!response.ok) {
+                throw new Error(`天气查询失败: ${response.statusText}`);
+            }
+
+            const weatherData = await response.json();
+            const result = weatherData.results[0];
+            
+            // 找到请求日期对应的天气数据
+            const forecast = result.daily.find(day => day.date === date);
+            if (!forecast) {
+                throw new Error(`未找到 ${date} 的天气数据`);
+            }
+
+            // 格式化返回数据
+            return {
+                location: result.location.name,
+                date: forecast.date,
+                weather: {
+                    day: forecast.text_day,
+                    night: forecast.text_night,
+                    temperature: {
+                        high: parseInt(forecast.high),
+                        low: parseInt(forecast.low)
+                    },
+                    wind: {
+                        direction: forecast.wind_direction,
+                        speed: forecast.wind_speed,
+                        scale: forecast.wind_scale
+                    },
+                    humidity: forecast.humidity,
+                    rainfall: forecast.rainfall,
+                    precipitation: forecast.precip
+                },
+                forecast: `${result.location.name}${forecast.date}天气情况：白天${forecast.text_day}，夜间${forecast.text_night}，气温${forecast.low}°C至${forecast.high}°C，${forecast.wind_direction}风${forecast.wind_scale}级，降水概率${forecast.precip}%，相对湿度${forecast.humidity}%。`
             };
 
         } catch (error) {
-            Logger.error('Weather Tool failed', error);
-            throw error;
+            Logger.error('天气查询失败', error);
+            throw new Error(`天气查询失败: ${error.message}`);
         }
     }
-
-    /**
-     * Generates a numeric hash from a string.
-     * Used to create a pseudo-random seed for consistent weather generation.
-     *
-     * @param {string} str - The input string.
-     * @returns {number} The numeric hash.
-     */
-    // Helper function to generate a numeric hash from a string
-    hashString(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            const char = str.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash;
-        }
-        return Math.abs(hash);
-    }
-} 
+}
