@@ -3,7 +3,7 @@ import { ApplicationError, ErrorCodes } from '../utils/error-boundary.js';
 import { GoogleSearchTool } from './google-search.js';
 import { WeatherTool } from './weather-tool.js';
 import { DisconnectTool } from './disconnect-tool.js';
-
+import { GetCurentDateTime } from './getCurentDateTime-tool.js';
 /**
  * Manages the registration and execution of tools.
  * Tools are used to extend the functionality of the Gemini API, allowing it to interact with external services.
@@ -24,6 +24,7 @@ export class ToolManager {
         this.registerTool('googleSearch', new GoogleSearchTool());
         this.registerTool('weather', new WeatherTool());
         this.registerTool('disconnect_session', new DisconnectTool());
+        this.registerTool('get_Curent_DateTime', new GetCurentDateTime());
     }
 
     /**
@@ -55,7 +56,7 @@ export class ToolManager {
         
         this.tools.forEach((tool, name) => {
             if (tool.getDeclaration) {
-                if (name === 'weather'|| name === 'disconnect_session') {
+                if (name === 'weather'|| name === 'disconnect_session'|| name === 'get_Curent_DateTime') {
                     allDeclarations.push({
                         functionDeclarations: tool.getDeclaration()
                     });
