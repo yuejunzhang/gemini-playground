@@ -56,7 +56,7 @@ export class Logger extends EventEmitter {
                 console.info(logEntry);
                 break;
             default:
-                console.log(logEntry);
+                // console.log(logEntry);
         }
 
         // Emit event

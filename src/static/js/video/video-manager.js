@@ -156,11 +156,13 @@ detectVolumeChange() {
     const currentVolume=audioVolume;
     const change = currentVolume - this.previousVolume ;
     this.previousVolume = currentVolume;
+    // console.log("currentVolume:",currentVolume);
+    // console.log("change:",change);
     if ((change > 0.3 && currentVolume==0) || (change > 0.3 && currentVolume>=0.3)){
         return 1;
       } else if(change < 0 && currentVolume==0) {
         return -1;
-      }else if(change > 0.5 && currentVolume>0.8) {
+      }else if(change > 0.6 && currentVolume>0.9) {
         return 2;
       }else {
       return 0;
