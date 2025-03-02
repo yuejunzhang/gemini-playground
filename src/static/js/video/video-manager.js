@@ -160,6 +160,8 @@ detectVolumeChange() {
         return 1;
       } else if(change < 0 && currentVolume==0) {
         return -1;
+      }else if(change > 0.5 && currentVolume>0.8) {
+        return 2;
       }else {
       return 0;
     }
@@ -190,13 +192,16 @@ detectVolumeChange() {
                     return;
                 }
                 //在此通过检测音频输入流强度inputAudioVisualizer超阈值时才发送截图，避免实时发送截图（非实时场景，可加开关）
-                if(this.detectVolumeChange()<=0){
+                let change = this.detectVolumeChange();
+                if(change<=0){
                     return;
+                }else if(change==2){
+                    stopPlayChunk();//打断播报
+                    audioElement.src = '';
+                    audioElement.load();
                 }
-                stopPlayChunk();//打断播报
-                audioElement.src = '';
-                audioElement.load();
-                    this.processFrame(base64Data, onFrame);
+
+                this.processFrame(base64Data, onFrame);
                 
 
             });
