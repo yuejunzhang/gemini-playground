@@ -46,6 +46,7 @@ const savedFPS = localStorage.getItem('video_fps');
 const savedSystemInstruction = localStorage.getItem('system_instruction');
 
 const SAMPLE_RATE=CONFIG.AUDIO.SAMPLE_RATE;
+const IS_MOBILE = isMobileDevice();
 
 if (savedApiKey) {
     apiKeyInput.value = savedApiKey;
@@ -729,4 +730,23 @@ function stopPlayChunks(){
     document.dispatchEvent(customEvent);
     // audioElement.src = '';
     // audioElement.load();
+}
+// 在 VideoManager 类中添加以下方法:
+
+function isMobileDevice() {
+    // 1. 检查 User Agent
+    const ua = navigator.userAgent.toLowerCase();
+    const isMobileUA = /mobile|android|iphone|ipad|phone/i.test(ua);
+    
+    // 2. 检查屏幕触摸功能
+    const hasTouchScreen = (
+        ('ontouchstart' in window) ||
+        (navigator.maxTouchPoints > 0) ||
+        (navigator.msMaxTouchPoints > 0)
+    );
+    
+    // 3. 检查屏幕宽度（一般移动设备小于 768px）
+    const isNarrowScreen = window.innerWidth < 768;
+    
+    return isMobileUA || (hasTouchScreen && isNarrowScreen);
 }

@@ -202,7 +202,11 @@ detectVolumeChange() {
                     audioElement.src = '';
                     audioElement.load();
                 }
-
+                if (IS_MOBILE){
+                    stopPlayChunk();//打断播报
+                    audioElement.src = '';
+                    audioElement.load();
+                }
                 this.processFrame(base64Data, onFrame);
                 
 
