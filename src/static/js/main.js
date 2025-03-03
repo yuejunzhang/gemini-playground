@@ -90,10 +90,12 @@ const client = new MultimodalLiveClient();
 var chunks=""
   // 监听自定义事件
   document.addEventListener('NewChunks', async  function(event) {
-    console.log('Custom event received:', event.detail.message);
+    console.log('Custom event received:=================================开始接收一条新的消息的文本', event.detail.message);
     // console.log(chunks);
            // 使用正则表达式检测断句符号（句号、问号、感叹号等）
     const chunkEndRegex = /[。：:?？\n]/u;
+    
+    // if (isLooping()){return;}//检查是否在循环中,调用时首先检查，防止重入循环
     while (chunks.length>0) {
         // 查找缓冲区中第一个断句符号的位置
         const match = chunks.match(chunkEndRegex);
@@ -116,9 +118,12 @@ var chunks=""
             if (voiceSelect.value !== 'none') {
                 console.log("\n正在播报==="+chunk);
                 await playChunk(chunk, voiceSelect.selectedIndex, 20, 0, false);
+                if (stopPlay){ break;}///////////////////////////必须加上这个判断，才能正常结束播放
             }
         }
+ 
     }
+
   });
 /**
  * Logs a message to the UI.
@@ -146,7 +151,7 @@ async function logMessage(message, type = 'system') {
                 chunks+="\n";
             }
             if(message.includes("WebSocket connection opened")){
-                stopPlay();
+                // stopPlayChunks();
                 disconnectFromWebsocket();
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
@@ -156,7 +161,7 @@ async function logMessage(message, type = 'system') {
                 if (voiceSelect.value !== 'none') playChunk(text,voiceSelect.selectedIndex,20,0,false);
             }
             if(message.includes("WebSocket connection closed")||message.includes('message.includes("WebSocket connection closed")')){
-                // stopPlay();
+                stopPlayChunks();
                 disconnectFromWebsocket();
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
@@ -178,7 +183,7 @@ async function logMessage(message, type = 'system') {
                 completed=false;
                 chunks="";
                 // playChunk(".",2,0,0,false);
-                stopPlay();
+                stopPlayChunks();
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('msg-div');
                 msglist.appendChild(msgDiv);
@@ -291,7 +296,7 @@ async function handleMicToggle() {
                 inputAnalyser.getByteFrequencyData(inputDataArray);
                 inputVolume = Math.max(...inputDataArray) / 255;
                 // if (inputVolume > 0.5) {
-                //     stopPlay();//打断播报
+                //     stopPlayChunks();//打断播报
                 //     audioElement.src = '';
                 //     audioElement.load();
                 // }
@@ -712,7 +717,7 @@ document.addEventListener('aiDisconnect', async (event) => {
     // disconnectFromWebsocket();
 });
 
-function stopPlay(){
+function stopPlayChunks(){
     chunks=""
     stopPlayChunk();
     var customEvent = new CustomEvent('NewChunks', {

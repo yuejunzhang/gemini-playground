@@ -19,9 +19,7 @@ var voiceList =[
 let ws = null;
 let isConnected = false; // 连接状态标志
 let Blobs = []; //Blob二进制对象数组
-let  audioElement = document.createElement('audio');
-// export let audioElement = document.createElement('audio');
-// export audioElement;
+let audioElement = document.createElement('audio');
 // 定义全局变量
 let Sec_MS_GEC = "";
 let Sec_MS_GEC_Version = "1-130.0.2849.80";
@@ -237,10 +235,18 @@ async function TTS(text,voiceindex=0,rate = 0,pitch=0,autpPlay=true) {
       // console.log('Received result:', result);
     } catch (error) {
 // ws.close();
-      stopPlay=true;
+stopPlay=true;
       console.error("tts已拒绝:", error);
       return null;
     }
+
+    // let result=null;
+    //  result = await connect(SSML, format,false).then(result => {
+    //   // console.log('Received result:', result);
+    //    return result;
+    // }).catch(function(error) {
+    //   console.error("tts已拒绝:", error);
+    // });
     return result;
   }
 }
@@ -272,13 +278,11 @@ async function playChunk(text,voiceindex=0,rate = 0,pitch=0,autpPlay=true) {
     audioElement.src = data;
     audioElement.play();
 }
-
 function stopPlayChunk(){
-  Blobs = []; //Blob二进制对象数组
   stopPlay=true;
   if(!audioElement.paused ){audioElement.currentTime = audioElement.duration;}
-  // audioElement.pause();
-  audioElement.src = "";
+  audioElement.pause();
+  // audioElement.src = "";
   audioElement.load();//清除缓存
 }
 
