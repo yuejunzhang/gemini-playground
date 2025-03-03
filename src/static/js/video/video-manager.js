@@ -1,7 +1,7 @@
 import { Logger } from '../utils/logger.js';
 import { VideoRecorder } from './video-recorder.js';
 import { ApplicationError, ErrorCodes } from '../utils/error-boundary.js';
-import{audioVolume,isRecording} from '../main.js';
+import{audioVolume,isRecording,IS_MOBILE} from '../main.js';
 
 /**
  * @fileoverview Manages video capture and processing with motion detection and frame preview.
@@ -202,6 +202,7 @@ detectVolumeChange() {
                     audioElement.src = '';
                     audioElement.load();
                 }
+                // console.log("是否移动设备",IS_MOBILE);
                 if (IS_MOBILE){
                     stopPlayChunk();//打断播报
                     audioElement.src = '';

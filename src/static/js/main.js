@@ -46,7 +46,7 @@ const savedFPS = localStorage.getItem('video_fps');
 const savedSystemInstruction = localStorage.getItem('system_instruction');
 
 const SAMPLE_RATE=CONFIG.AUDIO.SAMPLE_RATE;
-const IS_MOBILE = isMobileDevice();
+export const IS_MOBILE = isMobileDevice();
 
 if (savedApiKey) {
     apiKeyInput.value = savedApiKey;
