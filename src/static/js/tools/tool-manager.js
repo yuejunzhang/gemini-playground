@@ -4,6 +4,7 @@ import { GoogleSearchTool } from './google-search.js';
 import { WeatherTool } from './weather-tool.js';
 import { DisconnectTool } from './disconnect-tool.js';
 import { GetCurentDateTime } from './getCurentDateTime-tool.js';
+import { ChangeVoice } from './changeVoice-tool.js';
 /**
  * Manages the registration and execution of tools.
  * Tools are used to extend the functionality of the Gemini API, allowing it to interact with external services.
@@ -25,6 +26,7 @@ export class ToolManager {
         this.registerTool('get_weather_on_date', new WeatherTool());
         this.registerTool('disconnect_session', new DisconnectTool());
         this.registerTool('get_Curent_DateTime', new GetCurentDateTime());
+        this.registerTool('change_Voice', new ChangeVoice());
     }
 
     /**
@@ -55,8 +57,10 @@ export class ToolManager {
         const allDeclarations = [];
         
         this.tools.forEach((tool, name) => {
+
             if (tool.getDeclaration) {
-                if (name === 'get_weather_on_date'|| name === 'disconnect_session'|| name === 'get_Curent_DateTime') {
+                
+                if (name === 'get_weather_on_date'|| name === 'disconnect_session'|| name === 'get_Curent_DateTime'|| name === 'change_Voice') {
                     allDeclarations.push({
                         functionDeclarations: tool.getDeclaration()
                     });
