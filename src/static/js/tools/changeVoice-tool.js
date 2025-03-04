@@ -10,7 +10,7 @@ export class ChangeVoice {
                 properties: {
                     Voice_index: {
                         type: "integer",
-                        description: "更换TTS语音的索引，如果不提供，则随机更换TTS语音。(女青年:0,女孩子:1,中年男性:2,男青年:3,男孩子:4)"
+                        description: "更换TTS语音的索引，如果不提供，则随机更换TTS语音。(女青年:0, 女孩子:1, 男中年:2, 男青年:3, 男孩子:4, 静音:5)",
                     },                    
                     reason: {
                         type: "string",
