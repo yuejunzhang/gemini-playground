@@ -309,7 +309,7 @@ async function handleMicToggle() {
 
             //    //在此通过检测音频输入流强度inputAudioVisualizer超阈值时才发送截图，避免实时发送截图（非实时场景，可加开关）
                 change = detectVolumeChange();
-                console.log("=========================change:",change,enableSnapshot);
+                // console.log("=========================change:",change,enableSnapshot);
                 if(change==1){
                     enableSnapshot=true;
                     audioElement.volume = 0.1;
