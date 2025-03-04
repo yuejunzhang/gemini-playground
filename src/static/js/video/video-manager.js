@@ -1,7 +1,7 @@
 import { Logger } from '../utils/logger.js';
 import { VideoRecorder } from './video-recorder.js';
 import { ApplicationError, ErrorCodes } from '../utils/error-boundary.js';
-import{audioVolume,isRecording,IS_MOBILE} from '../main.js';
+import {enableSnapshot} from '../main.js';
 
 /**
  * @fileoverview Manages video capture and processing with motion detection and frame preview.
@@ -37,7 +37,7 @@ export class VideoManager {
         this.lastFrameTime = 0;
         this.videoRecorder = null;
         this.isActive = false;
-        this.previousVolume = 0;
+        // this.previousVolume = 0;
         this.previousVideoDiff = 0;
         // Configuration
         this.MOTION_THRESHOLD = 0.4;  //已经修改为变化率 Minimum pixel difference to detect motion
@@ -123,51 +123,8 @@ export class VideoManager {
         this.previousVideoDiff = diff;
         return diff2 /(pixelsToCheck / skipPixels);
     }
-    detectMotionByHistogram(prevFrame, currentFrame, bins = 32) {
-        // 计算灰度直方图
-        const getHistogram = (frame) => {
-            const histogram = new Array(bins).fill(0);
-            for (let i = 0; i < frame.length; i += 4) {
-                // 转换为灰度值
-                const gray = (frame[i] * 0.299 + frame[i + 1] * 0.587 + frame[i + 2] * 0.114);
-                const bin = Math.floor(gray * bins / 256);
-                histogram[bin]++;
-            }
-            return histogram;
-        };
-    
-        const hist1 = getHistogram(prevFrame);
-        const hist2 = getHistogram(currentFrame);
-    
-        // 计算直方图差异
-        let diff = 0;
-        for (let i = 0; i < bins; i++) {
-            diff += Math.abs(hist1[i] - hist2[i]);
-        }
-    
-        return diff / (prevFrame.length / 4);
-    }
 
-// 检测音量变化的函数
-detectVolumeChange() {
-    if(isRecording==false){
-        return 0;
-    }
-    const currentVolume=audioVolume;
-    const change = currentVolume - this.previousVolume ;
-    this.previousVolume = currentVolume;
-    // console.log("currentVolume:",currentVolume);
-    // console.log("change:",change);
-    if ((change > 0.3 && currentVolume==0) || (change > 0.3 && currentVolume>=0.3)){
-        return 1;
-      } else if(change < 0 && currentVolume==0) {
-        return -1;
-      }else if(change > 0.6 && currentVolume>0.9) {
-        return 2;
-      }else {
-      return 0;
-    }
-  }
+
     /**
      * Starts video capture and processing
      * @param {Function} onFrame - Callback for processed frames
@@ -193,23 +150,12 @@ detectVolumeChange() {
                 if (currentTime - this.lastFrameTime < this.FRAME_INTERVAL) {
                     return;
                 }
-                //在此通过检测音频输入流强度inputAudioVisualizer超阈值时才发送截图，避免实时发送截图（非实时场景，可加开关）
-                let change = this.detectVolumeChange();
-                if(change<=0){
+                 if(!enableSnapshot){
                     return;
-                }else if(change==2){
-                    stopPlayChunk();//打断播报
-                    audioElement.src = '';
-                    audioElement.load();
-                }
-                // console.log("是否移动设备",IS_MOBILE);
-                if (IS_MOBILE){
-                    stopPlayChunk();//打断播报
-                    audioElement.src = '';
-                    audioElement.load();
                 }
                 this.processFrame(base64Data, onFrame);
-                
+
+                // enableSnapshot=false;
 
             });
 

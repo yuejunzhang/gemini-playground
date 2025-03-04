@@ -5,6 +5,7 @@ import { CONFIG } from './config/config.js';
 import { Logger } from './utils/logger.js';
 import { VideoManager } from './video/video-manager.js';
 import { ScreenRecorder } from './video/screen-recorder.js';
+// import { AudioPlayer } from './audio/audio-player.js';
 
 
 /**
@@ -38,7 +39,7 @@ const systemInstructionInput = document.getElementById('system-instruction');
 systemInstructionInput.value = CONFIG.SYSTEM_INSTRUCTION.TEXT;
 const applyConfigButton = document.getElementById('apply-config');
 const responseTypeSelect = document.getElementById('response-type-select');
-export let audioVolume=0 ;
+
 // Load saved values from localStorage
 const savedApiKey = localStorage.getItem('gemini_api_key');
 const savedVoice = localStorage.getItem('gemini_voice');
@@ -46,7 +47,13 @@ const savedFPS = localStorage.getItem('video_fps');
 const savedSystemInstruction = localStorage.getItem('system_instruction');
 
 const SAMPLE_RATE=CONFIG.AUDIO.SAMPLE_RATE;
-export const IS_MOBILE = isMobileDevice();
+const IS_MOBILE = isMobileDevice();
+let audioVolume=0 ;
+let TTSaudioVolume=1;
+let previousVolume = 0;
+let change = 0;
+
+export let enableSnapshot = false;
 
 if (savedApiKey) {
     apiKeyInput.value = savedApiKey;
@@ -118,6 +125,7 @@ var chunks=""
             // 播放句子
             if (voiceSelect.value !== 'none') {
                 console.log("\n正在播报==="+chunk);
+                audioElement.volume = 1;
                 await playChunk(chunk, voiceSelect.selectedIndex, 20, 0, false);
                 if (stopPlay){ break;}///////////////////////////必须加上这个判断，才能正常结束播放
             }
@@ -281,7 +289,7 @@ async function handleMicToggle() {
             inputAnalyser.fftSize = 256;
             const inputDataArray = new Uint8Array(inputAnalyser.frequencyBinCount);
             
-            await audioRecorder.start((base64Data) => {
+            await audioRecorder.start(async (base64Data) => {
                 if (isUsingTool) {
                     client.sendRealtimeInput([{
                         mimeType: "audio/pcm;rate=" + SAMPLE_RATE,
@@ -297,12 +305,26 @@ async function handleMicToggle() {
                 
                 inputAnalyser.getByteFrequencyData(inputDataArray);
                 inputVolume = Math.max(...inputDataArray) / 255;
-                // if (inputVolume > 0.5) {
-                //     stopPlayChunks();//打断播报
-                //     audioElement.src = '';
-                //     audioElement.load();
-                // }
                 updateAudioVisualizer(inputVolume, true);
+
+            //    //在此通过检测音频输入流强度inputAudioVisualizer超阈值时才发送截图，避免实时发送截图（非实时场景，可加开关）
+                change = detectVolumeChange();
+                console.log("=========================change:",change,enableSnapshot);
+                if(change==1){
+                    enableSnapshot=true;
+                    audioElement.volume = 0.1;
+                    await setTimeout(() => {
+                        if(inputVolume<=0.3) {
+                            enableSnapshot=false;
+                            audioElement.volume = 1;
+                        }
+                    }, 3000);
+                }
+                // else if (change==1 && IS_MOBILE){// console.log("是否移动设备",IS_MOBILE);
+                //     // stopPlayChunk();//打断播报
+                //     // audioElement.src = '';
+                //     // audioElement.load();
+                // }
             });
 
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -597,8 +619,11 @@ async function handleVideoToggle() {
             await videoManager.start(fpsInput.value,(frameData) => {
                 if (isConnected ) {
                     // 发送前后闪烁画面的边框
-                    document.getElementById("preview").style.border = '1px solid red';
+                    document.getElementById("preview").style.border = '2px solid red';
+
                     client.sendRealtimeInput([frameData]);
+                    enableSnapshot = false;
+
                     console.log("图片发送成功=================");
                     setTimeout(() => {
                         document.getElementById("preview").style.border = 'none';
@@ -731,7 +756,26 @@ function stopPlayChunks(){
     // audioElement.src = '';
     // audioElement.load();
 }
-// 在 VideoManager 类中添加以下方法:
+// 检测音量变化的函数
+function detectVolumeChange() {
+    if(isRecording==false){
+        return 0;
+    }
+    const currentVolume=audioVolume;
+    const change = currentVolume - previousVolume ;
+    previousVolume = currentVolume;
+    // console.log("currentVolume:",currentVolume);
+    // console.log("change:",change);
+    if ((change > 0.3 && currentVolume==0) || (change > 0.3 && currentVolume>=0.3)){
+        return 1;
+      } else if(change < 0 && currentVolume==0) {
+        return -1;
+      }else if(change > 0.5 && currentVolume>0.8) {
+        return 2;
+      }else {
+      return 0;
+    }
+  }
 
 function isMobileDevice() {
     // 1. 检查 User Agent
