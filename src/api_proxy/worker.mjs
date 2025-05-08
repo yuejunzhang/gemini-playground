@@ -63,7 +63,7 @@ const handleOPTIONS = async () => {
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "*",
-      "Access-Control-Allow-Headers": "*",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
     }
   });
 };
