@@ -5,7 +5,7 @@ import { WeatherTool } from './weather-tool.js';
 import { DisconnectTool } from './disconnect-tool.js';
 import { GetCurentDateTime } from './getCurentDateTime-tool.js';
 import { ChangeVoice } from './changeVoice-tool.js';
-import {UserFeatureRecognitionByVoice} from './User-eature-recognition.js';
+// import {UserFeatureRecognitionByVoice} from './User-eature-recognition.js';
 /**
  * Manages the registration and execution of tools.
  * Tools are used to extend the functionality of the Gemini API, allowing it to interact with external services.
@@ -28,7 +28,7 @@ export class ToolManager {
         this.registerTool('disconnect_session', new DisconnectTool());
         this.registerTool('get_Curent_DateTime', new GetCurentDateTime());
         this.registerTool('change_Voice', new ChangeVoice());
-        this.registerTool('User_Feature_Recognition_By_Voice', new UserFeatureRecognitionByVoice());
+        // this.registerTool('User_Feature_Recognition_By_Voice', new UserFeatureRecognitionByVoice());
     }
 
     /**
