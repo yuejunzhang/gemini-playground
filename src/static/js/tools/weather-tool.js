@@ -14,7 +14,7 @@ export class WeatherTool {
     getDeclaration() {
         return [{
             name: "get_weather_on_date",
-            description: "获取指定城市指定日期的天气预报",
+            description: "获取指定城市指定日期的天气预报,需要先查询当前日期。",
             parameters: {
                 type: "object",
                 properties: {
