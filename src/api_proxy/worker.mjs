@@ -35,15 +35,15 @@ export default {
           assert(request.method === "GET");
           return handleModels(apiKey)
             .catch(errHandler);
-        case pathname.endsWith("/upload/v1beta/files"):
+        case pathname.includes("/upload/v1beta/files"):
           assert(request.method === "POST");
           return handleUploadFiles(request, apiKey)
             .catch(errHandler);
-        // case pathname.endsWith("/v1beta/files/list"):
+        // case pathname.includes("/v1beta/files/list"):
         //   assert(request.method === "GET");
         //   return handleListFiles(request, apiKey)
         //     .catch(errHandler);
-        // case pathname.endsWith("/v1beta/files/delete"):
+        // case pathname.includes("/v1beta/files/delete"):
         //   assert(request.method === "GET");
         //   return handleDeleteFile(request, apiKey)
         //     .catch(errHandler);
