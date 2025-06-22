@@ -257,14 +257,21 @@ function replaceBaseUrl(url, newBase) {
 }
 // 理解文件
 async function handleUnderstandingFile(request, apiKey) {
-  // 直接读取原始 body 字符串
+  // 读取原始 body 字符串
   const rawBody = await request.text();
+  // 打印请求体
+  console.log("Gemini 请求体:", rawBody);
+
   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
-  const response = await fetch(apiUrl, {
+  const fetchOptions = {
     method: "POST",
     headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
     body: rawBody, // 原样转发
-  });
+  };
+  // 打印 fetch 选项
+  console.log("fetchOptions:", fetchOptions);
+
+  const response = await fetch(apiUrl, fetchOptions);
   let body;
   if (response.ok) {
     body = await response.text();
