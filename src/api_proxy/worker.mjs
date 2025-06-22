@@ -203,13 +203,6 @@ async function handleCompletions (req, apiKey) {
 }
 
 async function handleUploadFiles(request, apiKey) {
-  return new Response("This endpoint is not supported yet. Please use the official Gemini API directly."+ request.URL, {
-    status: 501,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "text/plain",
-    }
-  });
   // 直接转发原始请求体和 headers
   const response = await fetch(`${BASE_URL}/${API_VERSION}/files:upload`, {
     method: "POST",
@@ -220,7 +213,7 @@ async function handleUploadFiles(request, apiKey) {
     },
     body: request.body,
   });
-
+  printf("Upload response:", response);
   // 直接返回下游响应
   return new Response(response.body, fixCors(response));
 }
