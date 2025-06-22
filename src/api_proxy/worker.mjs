@@ -202,76 +202,76 @@ async function handleCompletions (req, apiKey) {
   return new Response(body, fixCors(response));
 }
 
-async function handleUploadFiles(request, apiKey) {
-  // 直接转发原始请求体和 headers
+// async function handleUploadFiles(request, apiKey) {
+//   // 直接转发原始请求体和 headers
+//   const response = await fetch(`${BASE_URL}/upload/${API_VERSION}/files`, {
+//     method: "POST",
+//     headers: {
+//       ...makeHeaders(apiKey),
+//       // 保留原始 content-type，可能是 multipart/form-data
+//       "Content-Type": request.headers.get("Content-Type"),
+//     },
+//     body: request.body,
+//   });
+//   console.log("Upload response:", response);
+//   // 直接返回下游响应
+//   return new Response(response.body, fixCors(response));
+// }
+
+async function handleUploadFiles (request, apiKey) {
+  const contentType = request.headers.get("Content-Type");
+  if (!contentType || !contentType.startsWith("multipart/form-data")) {
+    throw new HttpError("Unsupported Content-Type: " + contentType, 400);
+  }
+  const formData = await request.formData();
+  const file = formData.get("file");
+  if (!file || !(file instanceof Blob)) {
+    throw new HttpError("File is not specified or is not a Blob", 400);
+  }
+  const fileName = formData.get("file_name") || file.name || "file";
+  const fileType = formData.get("file_type") || file.type || "application/octet-stream";
+  const fileData = await file.arrayBuffer();
   const response = await fetch(`${BASE_URL}/upload/${API_VERSION}/files`, {
     method: "POST",
-    headers: {
-      ...makeHeaders(apiKey),
-      // 保留原始 content-type，可能是 multipart/form-data
-      "Content-Type": request.headers.get("Content-Type"),
-    },
-    body: request.body,
+    headers: makeHeaders(apiKey, {
+      "Content-Type": "application/json",
+      "X-Goog-Upload-File-Name": fileName,
+      "X-Goog-Upload-Protocol": "raw",
+      "X-Goog-Upload-Content-Type": fileType, // optional
+      "X-Goog-Upload-Content-Length": fileData.byteLength, // optional
+    }),
+    body: fileData,
   });
-  console.log("Upload response:", response);
-  // 直接返回下游响应
-  return new Response(response.body, fixCors(response));
+  let body = response.body;
+  if (response.ok) {
+    const { file: uploadedFile } = JSON.parse(await response.text());
+    body = JSON.stringify({
+      id: uploadedFile.name.replace("files/", ""),
+      object: "file",
+      bytes: uploadedFile.size,
+      created_at: Math.floor(Date.now()/1000),
+      filename: uploadedFile.name,
+      purpose: uploadedFile.purpose,
+      status: "uploaded",
+      type: uploadedFile.contentType,
+      metadata: {
+        original_filename: fileName,
+        file_type: fileType,
+      },
+    }, null, "  ");
+  } else {
+    const error = JSON.parse(await response.text());
+    body = JSON.stringify({
+      error: {
+        message: error.error.message || "Unknown error",
+        type: error.error.code || "unknown_error",
+        param: error.error.details?.[0]?.field || null,
+        code: error.error.code || null,
+      }
+    }, null, "  ");
+  }
+  return new Response(body, fixCors(response));
 }
-
-// async function handleUploadFiles (request, apiKey) {
-//   const contentType = request.headers.get("Content-Type");
-//   if (!contentType || !contentType.startsWith("multipart/form-data")) {
-//     throw new HttpError("Unsupported Content-Type: " + contentType, 400);
-//   }
-//   const formData = await request.formData();
-//   const file = formData.get("file");
-//   if (!file || !(file instanceof Blob)) {
-//     throw new HttpError("File is not specified or is not a Blob", 400);
-//   }
-//   const fileName = formData.get("file_name") || file.name || "file";
-//   const fileType = formData.get("file_type") || file.type || "application/octet-stream";
-//   const fileData = await file.arrayBuffer();
-//   const response = await fetch(`${BASE_URL}/${API_VERSION}/files:upload`, {
-//     method: "POST",
-//     headers: makeHeaders(apiKey, {
-//       "Content-Type": "application/json",
-//       "X-Goog-Upload-File-Name": fileName,
-//       "X-Goog-Upload-Protocol": "raw",
-//       "X-Goog-Upload-Content-Type": fileType, // optional
-//       "X-Goog-Upload-Content-Length": fileData.byteLength, // optional
-//     }),
-//     body: fileData,
-//   });
-//   let body = response.body;
-//   if (response.ok) {
-//     const { file: uploadedFile } = JSON.parse(await response.text());
-//     body = JSON.stringify({
-//       id: uploadedFile.name.replace("files/", ""),
-//       object: "file",
-//       bytes: uploadedFile.size,
-//       created_at: Math.floor(Date.now()/1000),
-//       filename: uploadedFile.name,
-//       purpose: uploadedFile.purpose,
-//       status: "uploaded",
-//       type: uploadedFile.contentType,
-//       metadata: {
-//         original_filename: fileName,
-//         file_type: fileType,
-//       },
-//     }, null, "  ");
-//   } else {
-//     const error = JSON.parse(await response.text());
-//     body = JSON.stringify({
-//       error: {
-//         message: error.error.message || "Unknown error",
-//         type: error.error.code || "unknown_error",
-//         param: error.error.details?.[0]?.field || null,
-//         code: error.error.code || null,
-//       }
-//     }, null, "  ");
-//   }
-//   return new Response(body, fixCors(response));
-// }
 
 const harmCategory = [
   "HARM_CATEGORY_HATE_SPEECH",
