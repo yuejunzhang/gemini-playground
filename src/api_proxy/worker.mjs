@@ -271,15 +271,15 @@ async function handleUnderstandingFile(request, apiKey) {
     }
   }
   // 强制覆盖 API 认证相关头
-  // const headers = {
-  //   ...originalHeaders,
-  //   ...makeHeaders(apiKey, { "Content-Type": "application/json" }),
-  // };
+  const headers = {
+    ...originalHeaders,
+    // ...makeHeaders(apiKey, { "Content-Type": "application/json" }),
+  };
 
   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
   const fetchOptions = {
     method: "POST",
-    headers,
+    originalHeaders,
     body: rawBody,
   };
   // 打印 fetch 选项
