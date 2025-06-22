@@ -252,9 +252,12 @@ async function handleUploadFiles(request, apiKey) {
 }
 function replaceBaseUrl(url, newBase) {
   const urlObj = new URL(url);
-  // 只保留 path 和 search
-  return newBase + urlObj.pathname + urlObj.search;
+  const newUrl = new URL(newBase);
+  newUrl.pathname = urlObj.pathname;
+  newUrl.search = urlObj.search;
+  return newUrl.toString();
 }
+
 // 理解文件
 async function handleUnderstandingFile(request, apiKey) {
   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
