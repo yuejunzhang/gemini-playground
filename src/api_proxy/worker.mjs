@@ -251,12 +251,11 @@ async function handleUploadFiles(request, apiKey) {
   }
   return new Response(body, fixCors(response));
 }
+
 function replaceBaseUrl(url, newBase) {
   const urlObj = new URL(url);
-  const newUrl = new URL(newBase);
-  newUrl.pathname = urlObj.pathname;
-  newUrl.search = urlObj.search;
-  return newUrl.toString();
+  // 只保留 path 和 search
+  return newBase + urlObj.pathname + urlObj.search;
 }
 
 // 理解文件
@@ -265,7 +264,7 @@ async function handleUnderstandingFile(request, apiKey) {
 
   try {
     const requestBody = await request.json(); // 解析 JSON 请求体
-
+console.log("Request body:", requestBody);
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
