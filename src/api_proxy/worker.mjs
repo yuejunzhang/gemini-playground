@@ -45,14 +45,14 @@ export default {
           assert(request.method === "POST");
           return handleUploadFiles(request, apiKey)
             .catch(errHandler);
-        // case pathname.includes("/v1beta/files/list"):
-        //   assert(request.method === "GET");
-        //   return handleListFiles(request, apiKey)
-        //     .catch(errHandler);
-        // case pathname.includes("/v1beta/files/delete"):
-        //   assert(request.method === "DELETE");
-        //   return handleDeleteFile(request, apiKey)
-        //     .catch(errHandler);
+        case pathname.includes("/v1beta/files/list"):
+          assert(request.method === "GET");
+          return handleListFiles(request, apiKey)
+            .catch(errHandler);
+        case pathname.includes("/v1beta/files/delete"):
+          assert(request.method === "DELETE");
+          return handleDeleteFile(request, apiKey)
+            .catch(errHandler);
         default:
           throw new HttpError("404 Not Found", 404);
       }
@@ -248,60 +248,45 @@ async function handleUploadFiles(request, apiKey) {
   return new Response(body, fixCors(response));
 }
 
-// async function handleUploadFiles (request, apiKey) {
-//   const contentType = request.headers.get("Content-Type");
-//   if (!contentType || !contentType.startsWith("multipart/form-data")) {
-//     throw new HttpError("Unsupported Content-Type: " + contentType, 400);
-//   }
-//   const formData = await request.formData();
-//   const file = formData.get("file");
-//   if (!file || !(file instanceof Blob)) {
-//     throw new HttpError("File is not specified or is not a Blob", 400);
-//   }
-//   const fileName = formData.get("file_name") || file.name || "file";
-//   const fileType = formData.get("file_type") || file.type || "application/octet-stream";
-//   const fileData = await file.arrayBuffer();
-//   const response = await fetch(`${BASE_URL}/upload/${API_VERSION}/files`, {
-//     method: "POST",
-//     headers: makeHeaders(apiKey, {
-//       "Content-Type": "application/json",
-//       "X-Goog-Upload-File-Name": fileName,
-//       "X-Goog-Upload-Protocol": "raw",
-//       "X-Goog-Upload-Content-Type": fileType, // optional
-//       "X-Goog-Upload-Content-Length": fileData.byteLength, // optional
-//     }),
-//     body: fileData,
-//   });
-//   let body = response.body;
-//   if (response.ok) {
-//     const { file: uploadedFile } = JSON.parse(await response.text());
-//     body = JSON.stringify({
-//       id: uploadedFile.name.replace("files/", ""),
-//       object: "file",
-//       bytes: uploadedFile.size,
-//       created_at: Math.floor(Date.now()/1000),
-//       filename: uploadedFile.name,
-//       purpose: uploadedFile.purpose,
-//       status: "uploaded",
-//       type: uploadedFile.contentType,
-//       metadata: {
-//         original_filename: fileName,
-//         file_type: fileType,
-//       },
-//     }, null, "  ");
-//   } else {
-//     const error = JSON.parse(await response.text());
-//     body = JSON.stringify({
-//       error: {
-//         message: error.error.message || "Unknown error",
-//         type: error.error.code || "unknown_error",
-//         param: error.error.details?.[0]?.field || null,
-//         code: error.error.code || null,
-//       }
-//     }, null, "  ");
-//   }
-//   return new Response(body, fixCors(response));
-// }
+// 列出文件
+async function handleListFiles(request, apiKey) {
+  // 直接转发 GET 请求到 Gemini API
+  const urlObj = new URL(request.url);
+  // 兼容 /v1beta/files/list 或 /v1beta/files
+  const apiUrl = `${BASE_URL}/${API_VERSION}/files?key=${apiKey}`;
+  const response = await fetch(apiUrl, {
+    method: "GET",
+    headers: makeHeaders(apiKey),
+  });
+
+  let body;
+  if (response.ok) {
+    body = await response.text();
+  } else {
+    body = JSON.stringify({ error: await response.text() });
+  }
+  return new Response(body, fixCors(response));
+}
+
+// 删除文件
+async function handleDeleteFile(request, apiKey) {
+  // 路径如 /v1beta/files/{file_id}/delete 或 /v1beta/files/{file_id}
+  const urlObj = new URL(request.url);
+  // 提取 file_id
+  const match = urlObj.pathname.match(/\/v1beta\/files\/([^/]+)/);
+  const fileId = match ? match[1] : null;
+  if (!fileId) {
+    return new Response(JSON.stringify({ error: "file_id not found" }), fixCors({ status: 400 }));
+  }
+  const apiUrl = `${BASE_URL}/${API_VERSION}/files/${fileId}?key=${apiKey}`;
+  const response = await fetch(apiUrl, {
+    method: "DELETE",
+    headers: makeHeaders(apiKey),
+  });
+
+  // 删除接口通常无返回内容，直接返回状态
+  return new Response(null, fixCors({ status: response.status }));
+}
 
 const harmCategory = [
   "HARM_CATEGORY_HATE_SPEECH",
