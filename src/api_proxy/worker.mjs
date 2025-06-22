@@ -213,7 +213,7 @@ async function handleUploadFiles(request, apiKey) {
     },
     body: request.body,
   });
-  printf("Upload response:", response);
+  console.log("Upload response:", response);
   // 直接返回下游响应
   return new Response(response.body, fixCors(response));
 }
