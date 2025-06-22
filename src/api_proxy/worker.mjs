@@ -258,15 +258,15 @@ function replaceBaseUrl(url, newBase) {
 // 理解文件
 async function handleUnderstandingFile(request, apiKey) {
   // 只消费一次 body
-  const reqBody = await request.json();
+  const reqBody = await request.text();
   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
   console.log("apiUrl:", apiUrl);
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
-    body: JSON.stringify(reqBody),
+    body: reqBody,
   });
-  console.log(reqBody, response); // 只用变量
+  console.log("请求"+reqBody, "响应"+response); // 只用变量
   let body;
   if (response.ok) {
     body = await response.text();
