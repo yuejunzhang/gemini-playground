@@ -45,14 +45,14 @@ export default {
           assert(request.method === "POST");
           return handleUploadFiles(request, apiKey)
             .catch(errHandler);
-        case pathname.includes("/v1beta/files/list"):
+        case pathname.includes("/v1beta/files/"):
           assert(request.method === "GET");
           return handleListFiles(request, apiKey)
             .catch(errHandler);
-        case pathname.includes("/v1beta/files/delete"):
-          assert(request.method === "DELETE");
-          return handleDeleteFile(request, apiKey)
-            .catch(errHandler);
+        // case pathname.includes("/v1beta/filename):
+        //   assert(request.method === "DELETE");
+        //   return handleDeleteFile(request, apiKey)
+        //     .catch(errHandler);
         default:
           throw new HttpError("404 Not Found", 404);
       }
@@ -269,24 +269,24 @@ async function handleListFiles(request, apiKey) {
 }
 
 // 删除文件
-async function handleDeleteFile(request, apiKey) {
-  // 路径如 /v1beta/files/{file_id}/delete 或 /v1beta/files/{file_id}
-  const urlObj = new URL(request.url);
-  // 提取 file_id
-  const match = urlObj.pathname.match(/\/v1beta\/files\/([^/]+)/);
-  const fileId = match ? match[1] : null;
-  if (!fileId) {
-    return new Response(JSON.stringify({ error: "file_id not found" }), fixCors({ status: 400 }));
-  }
-  const apiUrl = `${BASE_URL}/${API_VERSION}/files/${fileId}?key=${apiKey}`;
-  const response = await fetch(apiUrl, {
-    method: "DELETE",
-    headers: makeHeaders(apiKey),
-  });
+// async function handleDeleteFile(request, apiKey) {
+//   // 路径如 /v1beta/files/{file_id}/delete 或 /v1beta/files/{file_id}
+//   const urlObj = new URL(request.url);
+//   // 提取 file_id
+//   const match = urlObj.pathname.match(/\/v1beta\/files\/([^/]+)/);
+//   const fileId = match ? match[1] : null;
+//   if (!fileId) {
+//     return new Response(JSON.stringify({ error: "file_id not found" }), fixCors({ status: 400 }));
+//   }
+//   const apiUrl = `${BASE_URL}/${API_VERSION}/files/${fileId}?key=${apiKey}`;
+//   const response = await fetch(apiUrl, {
+//     method: "DELETE",
+//     headers: makeHeaders(apiKey),
+//   });
 
-  // 删除接口通常无返回内容，直接返回状态
-  return new Response(null, fixCors({ status: response.status }));
-}
+//   // 删除接口通常无返回内容，直接返回状态
+//   return new Response(null, fixCors({ status: response.status }));
+// }
 
 const harmCategory = [
   "HARM_CATEGORY_HATE_SPEECH",
