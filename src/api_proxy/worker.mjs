@@ -257,23 +257,33 @@ function replaceBaseUrl(url, newBase) {
 }
 // 理解文件
 async function handleUnderstandingFile(request, apiKey) {
-  // 直接读取原始 body 字符串
-  const rawBody = await request.text();
   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
-  const response = await fetch(apiUrl, {
-    method: "POST",
-    headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
-    body: rawBody, // 原样转发
-  });
-  let body;
-  if (response.ok) {
-    body = await response.text();
-  } else {
-    body = JSON.stringify({ error: await response.text() });
+
+  try {
+    const requestBody = await request.json(); // 解析 JSON 请求体
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
+      body: JSON.stringify(requestBody), // 将 JSON 对象序列化为字符串
+    });
+
+    let body;
+    if (response.ok) {
+      body = await response.text();
+    } else {
+      body = JSON.stringify({ error: await response.text() });
+    }
+    return new Response(body, fixCors(response));
+  } catch (error) {
+    console.error("Error parsing request body:", error);
+    return new Response(JSON.stringify({ error: "Invalid JSON in request body" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
   }
-  console.log("理解文件响应:", body);
-  return new Response(body, fixCors(response));
 }
+ 
 
 // 列出文件
 async function handleListFiles(request, apiKey) {
