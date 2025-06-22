@@ -269,7 +269,7 @@ async function handleUnderstandingFile(request, apiKey) {
     headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
     body: await request.text(),
   });
-
+console.log(request.text(),response);
   let body;
   if (response.ok) {
     body = await response.text();
