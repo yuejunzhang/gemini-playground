@@ -257,16 +257,40 @@ function replaceBaseUrl(url, newBase) {
 }
 // 理解文件
 async function handleUnderstandingFile(request, apiKey) {
-  // 只消费一次 body
-  const reqBody = await request.text();
+  // 解析请求体
+  const req = await request.json();
+  // 假设 req.contents[0].parts 结构与 Python 端一致
+  let text = "";
+  let file_data = {};
+  if (req.contents && req.contents[0] && req.contents[0].parts) {
+    for (const part of req.contents[0].parts) {
+      if (part.text) text = part.text;
+      if (part.file_data) file_data = part.file_data;
+    }
+  }
+  // 组装 Gemini API 需要的 payload
+  const payload = {
+    contents: [
+      {
+        parts: [
+          { text },
+          { file_data: {
+              mime_type: file_data.mime_type || file_data.mimeType,
+              file_uri: file_data.file_uri || file_data.uri
+            }
+          }
+        ]
+      }
+    ],
+    generationConfig: req.generationConfig || { candidateCount: 1, temperature: 0.2 }
+  };
+
   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
-  console.log("apiUrl:", apiUrl);
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
-    body: reqBody,
+    body: JSON.stringify(payload),
   });
-  console.log("请求"+reqBody, "响应"+response); // 只用变量
   let body;
   if (response.ok) {
     body = await response.text();
