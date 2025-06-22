@@ -263,7 +263,7 @@ async function handleUnderstandingFile(request, apiKey) {
   // const apiUrl =`${BASE_URL}/${API_VERSION}/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
   // // "{URL}/v1beta/models/{model}:generateContent?key={api_key}"
   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
-
+  console.log("apiUrl:", apiUrl);
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
