@@ -257,19 +257,16 @@ function replaceBaseUrl(url, newBase) {
 }
 // 理解文件
 async function handleUnderstandingFile(request, apiKey) {
-  // 直接转发 POST 请求到 Gemini API
-  // const urlObj = new URL(request.url);
-  // // 兼容 /v1beta/models/{model_id}/understanding_file 或 /v1beta/models/{model_id}
-  // const apiUrl =`${BASE_URL}/${API_VERSION}/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-  // // "{URL}/v1beta/models/{model}:generateContent?key={api_key}"
+  // 只消费一次 body
+  const reqBody = await request.text();
   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
   console.log("apiUrl:", apiUrl);
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
-    body: await request.text(),
+    body: reqBody,
   });
-console.log(request.text(),response);
+  console.log(reqBody, response); // 只用变量
   let body;
   if (response.ok) {
     body = await response.text();
@@ -277,7 +274,7 @@ console.log(request.text(),response);
     body = JSON.stringify({ error: await response.text() });
   }
   return new Response(body, fixCors(response));
-} 
+}
 
 // 列出文件
 async function handleListFiles(request, apiKey) {
