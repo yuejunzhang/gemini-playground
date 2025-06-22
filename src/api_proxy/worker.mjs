@@ -44,7 +44,7 @@ export default {
         //   return handleListFiles(request, apiKey)
         //     .catch(errHandler);
         // case pathname.includes("/v1beta/files/delete"):
-        //   assert(request.method === "GET");
+        //   assert(request.method === "DELETE");
         //   return handleDeleteFile(request, apiKey)
         //     .catch(errHandler);
         default:
@@ -203,6 +203,13 @@ async function handleCompletions (req, apiKey) {
 }
 
 async function handleUploadFiles(request, apiKey) {
+  return new response("This endpoint is not supported yet. Please use the official Gemini API directly.", {
+    status: 501,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "text/plain",
+    }
+  });
   // 直接转发原始请求体和 headers
   const response = await fetch(`${BASE_URL}/${API_VERSION}/files:upload`, {
     method: "POST",
