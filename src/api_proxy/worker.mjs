@@ -204,7 +204,7 @@ async function handleCompletions (req, apiKey) {
 
 async function handleUploadFiles(request, apiKey) {
   // 直接转发原始请求体和 headers
-  const response = await fetch(`${BASE_URL}/${API_VERSION}/files:upload`, {
+  const response = await fetch(`${BASE_URL}/upload/${API_VERSION}/files`, {
     method: "POST",
     headers: {
       ...makeHeaders(apiKey),
