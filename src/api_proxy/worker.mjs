@@ -203,19 +203,43 @@ async function handleCompletions (req, apiKey) {
 }
 
 async function handleUploadFiles(request, apiKey) {
-  // 直接转发原始请求体和 headers
-  const response = await fetch(`${BASE_URL}/upload/${API_VERSION}/files`, {
+  // 1. 解析 multipart/form-data，获取文件
+  const contentType = request.headers.get("Content-Type") || "";
+  if (!contentType.startsWith("multipart/form-data")) {
+    throw new HttpError("Unsupported Content-Type: " + contentType, 400);
+  }
+  const formData = await request.formData();
+  const file = formData.get("file");
+  if (!file || !(file instanceof Blob)) {
+    throw new HttpError("File is not specified or is not a Blob", 400);
+  }
+  const fileName = file.name || "file";
+  const fileType = file.type || "application/octet-stream";
+  const fileData = await file.arrayBuffer();
+
+  // 2. 按 Gemini API 要求上传
+  const response = await fetch(`${BASE_URL}/upload/${API_VERSION}/files?key=${apiKey}`, {
     method: "POST",
-    headers: {
-      ...makeHeaders(apiKey),
-      // 保留原始 content-type，可能是 multipart/form-data
-      "Content-Type": request.headers.get("Content-Type"),
-    },
-    body: request.body,
+    headers: makeHeaders(apiKey, {
+      "Content-Type": "application/octet-stream",
+      "X-Goog-Upload-File-Name": fileName,
+      "X-Goog-Upload-Protocol": "raw",
+      "X-Goog-Upload-Content-Type": fileType,
+      "X-Goog-Upload-Content-Length": fileData.byteLength,
+    }),
+    body: fileData,
   });
-  console.log("Upload response:", response);
-  // 直接返回下游响应
-  return new Response(response.body, fixCors(response));
+
+  // 3. 处理 Gemini 响应，兼容你的 Python 客户端
+  let body;
+  if (response.ok) {
+    const { file: uploadedFile } = await response.json();
+    body = JSON.stringify({ file: uploadedFile });
+  } else {
+    const error = await response.text();
+    body = JSON.stringify({ error });
+  }
+  return new Response(body, fixCors(response));
 }
 
 // async function handleUploadFiles (request, apiKey) {
