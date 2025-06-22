@@ -326,7 +326,7 @@ function replaceBaseUrl(url, newBase) {
       headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
       body: JSON.stringify(payload),
     });
-
+    console.log(response)
     let original_response;
     try {
       original_response = await response.json();
