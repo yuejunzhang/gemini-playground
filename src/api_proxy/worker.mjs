@@ -203,7 +203,7 @@ async function handleCompletions (req, apiKey) {
 }
 
 async function handleUploadFiles(request, apiKey) {
-  return new response("This endpoint is not supported yet. Please use the official Gemini API directly.", {
+  return new Response("This endpoint is not supported yet. Please use the official Gemini API directly."+ request.URL, {
     status: 501,
     headers: {
       "Access-Control-Allow-Origin": "*",
