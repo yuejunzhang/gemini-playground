@@ -262,11 +262,25 @@ async function handleUnderstandingFile(request, apiKey) {
   // 打印请求体
   console.log("Gemini 请求体:", rawBody);
 
+  // 复制原始 headers
+  const originalHeaders = {};
+  for (const [key, value] of request.headers.entries()) {
+    // 跳过 Host、Content-Length 等 hop-by-hop headers
+    if (!["host", "content-length"].includes(key.toLowerCase())) {
+      originalHeaders[key] = value;
+    }
+  }
+  // 强制覆盖 API 认证相关头
+  // const headers = {
+  //   ...originalHeaders,
+  //   ...makeHeaders(apiKey, { "Content-Type": "application/json" }),
+  // };
+
   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
   const fetchOptions = {
     method: "POST",
-    headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
-    body: rawBody, // 原样转发
+    headers,
+    body: rawBody,
   };
   // 打印 fetch 选项
   console.log("fetchOptions:", fetchOptions);
@@ -281,7 +295,6 @@ async function handleUnderstandingFile(request, apiKey) {
   console.log("理解文件响应:", body);
   return new Response(body, fixCors(response));
 }
-
 // 列出文件
 async function handleListFiles(request, apiKey) {
   // 直接转发 GET 请求到 Gemini API
