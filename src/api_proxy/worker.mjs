@@ -250,13 +250,20 @@ async function handleUploadFiles(request, apiKey) {
   }
   return new Response(body, fixCors(response));
 }
-
+function replaceBaseUrl(url, newBase) {
+  const urlObj = new URL(url);
+  // 只保留 path 和 search
+  return newBase + urlObj.pathname + urlObj.search;
+}
 // 理解文件
 async function handleUnderstandingFile(request, apiKey) {
   // 直接转发 POST 请求到 Gemini API
-  const urlObj = new URL(request.url);
-  // 兼容 /v1beta/models/{model_id}/understanding_file 或 /v1beta/models/{model_id}
-  const apiUrl = request.url;//`${BASE_URL}/${API_VERSION}/models/${modelId}/understanding_file?key=${apiKey}`;
+  // const urlObj = new URL(request.url);
+  // // 兼容 /v1beta/models/{model_id}/understanding_file 或 /v1beta/models/{model_id}
+  // const apiUrl =`${BASE_URL}/${API_VERSION}/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  // // "{URL}/v1beta/models/{model}:generateContent?key={api_key}"
+  const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
+
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
