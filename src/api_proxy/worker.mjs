@@ -261,7 +261,7 @@ function replaceBaseUrl(url, newBase) {
 // 理解文件
 async function handleUnderstandingFile(request, apiKey) {
   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
-
+console.log("apiUrl:", apiUrl);
   try {
     const requestBody = await request.json(); // 解析 JSON 请求体
 console.log("Request body:", requestBody);
