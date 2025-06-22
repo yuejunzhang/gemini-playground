@@ -253,7 +253,7 @@ async function handleListFiles(request, apiKey) {
   // 直接转发 GET 请求到 Gemini API
   const urlObj = new URL(request.url);
   // 兼容 /v1beta/files/list 或 /v1beta/files
-  const apiUrl = `${BASE_URL}/${API_VERSION}/files?key=${apiKey}`;
+  const apiUrl = request.url;//`${BASE_URL}/${API_VERSION}/files?key=${apiKey}`;
   const response = await fetch(apiUrl, {
     method: "GET",
     headers: makeHeaders(apiKey),
