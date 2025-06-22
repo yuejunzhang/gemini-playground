@@ -259,34 +259,109 @@ function replaceBaseUrl(url, newBase) {
 }
 
 // 理解文件
-async function handleUnderstandingFile(request, apiKey) {
-  const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
-console.log("apiUrl:", apiUrl);
+// async function handleUnderstandingFile(request, apiKey) {
+//   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
+
+//   try {
+//     const requestBody = await request.json(); // 解析 JSON 请求体
+//     console.log("Request body:", requestBody);
+//     const response = await fetch(apiUrl, {
+//       method: "POST",
+//       headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
+//       body: JSON.stringify(requestBody), // 将 JSON 对象序列化为字符串
+//     });
+
+//     let body;
+//     if (response.ok) {
+//       body = await response.text();
+//     } else {
+//       body = JSON.stringify({ error: await response.text() });
+//     }
+//     return new Response(body, fixCors(response));
+//   } catch (error) {
+//     console.error("Error parsing request body:", error);
+//     return new Response(JSON.stringify({ error: "Invalid JSON in request body" }), {
+//       status: 400,
+//       headers: { "Content-Type": "application/json" },
+//     });
+//   }
+// }
+ async function handleUnderstandingFile(request, apiKey) {
   try {
-    const requestBody = await request.json(); // 解析 JSON 请求体
-console.log("Request body:", requestBody);
-    const response = await fetch(apiUrl, {
+    // 1. 解析请求体
+    const reqBody = await request.json();
+    const { model, text, temperature, file_data } = reqBody;
+    if (!model || !text || !file_data?.mimeType || !file_data?.uri) {
+      return new Response(JSON.stringify({ error: "Missing required fields" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // 2. 构造 Gemini API 请求
+    const url = `${BASE_URL}/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    const payload = {
+      contents: [
+        {
+          parts: [
+            { text },
+            {
+              file_data: {
+                mime_type: file_data.mimeType,
+                file_uri: file_data.uri,
+              }
+            }
+          ]
+        }
+      ],
+      generationConfig: {
+        candidateCount: 1,
+        temperature: temperature
+      }
+    };
+
+    // 3. 发送 POST 请求
+    const response = await fetch(url, {
       method: "POST",
       headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
-      body: JSON.stringify(requestBody), // 将 JSON 对象序列化为字符串
+      body: JSON.stringify(payload),
     });
 
-    let body;
-    if (response.ok) {
-      body = await response.text();
-    } else {
-      body = JSON.stringify({ error: await response.text() });
+    let original_response;
+    try {
+      original_response = await response.json();
+    } catch (exc) {
+      return new Response(JSON.stringify({ error: "An error occurred while parsing the response." }), fixCors({ status: 500 }));
     }
-    return new Response(body, fixCors(response));
+
+    if (!response.ok) {
+      return new Response(JSON.stringify({
+        error: original_response?.error?.message || "Provider error",
+        code: response.status
+      }), fixCors({ status: response.status }));
+    }
+
+    let generated_text;
+    try {
+      generated_text = original_response.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!generated_text) throw new Error();
+    } catch {
+      return new Response(JSON.stringify({ error: "Provider returned empty response" }), fixCors({ status: 500 }));
+    }
+
+    // 4. 返回原始响应和生成文本
+    return new Response(JSON.stringify({
+      original_response,
+      generated_text
+    }), fixCors({ status: 200, headers: { "Content-Type": "application/json" } }));
+
   } catch (error) {
-    console.error("Error parsing request body:", error);
     return new Response(JSON.stringify({ error: "Invalid JSON in request body" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
   }
 }
- 
 
 // 列出文件
 async function handleListFiles(request, apiKey) {
