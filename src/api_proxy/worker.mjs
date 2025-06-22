@@ -229,7 +229,7 @@ async function handleUploadFiles(request, apiKey) {
     }),
     body: fileData,
   });
-  console.log(headers)
+  console.log(apiKey)
   // 3. 处理 Gemini 响应，兼容你的 Python 客户端
   let body;
   if (response.ok) {
