@@ -41,14 +41,17 @@ export default {
           assert(request.method === "GET");
           return handleModels(apiKey)
             .catch(errHandler);
-        case pathname.includes("/upload/v1beta/files"):
+        case pathname.includes("/upload/v1beta/files")://仅支持gemini 格式请求
           assert(request.method === "POST");
           return handleUploadFiles(request, apiKey)
             .catch(errHandler);
-        case pathname.includes("/v1beta/files/"):
+        case pathname.includes("/v1beta/files/")://仅支持gemini 格式请求
           assert(request.method === "GET");
           return handleListFiles(request, apiKey)
-            .catch(errHandler);
+        case pathname.includes("/v1beta/models/")://仅支持gemini 格式请求
+          assert(request.method === "POST");
+          return handleUnderstandingFile(request, apiKey)           
+          .catch(errHandler);
         // case pathname.includes("/v1beta/filename):
         //   assert(request.method === "DELETE");
         //   return handleDeleteFile(request, apiKey)
@@ -247,6 +250,27 @@ async function handleUploadFiles(request, apiKey) {
   }
   return new Response(body, fixCors(response));
 }
+
+// 理解文件
+async function handleUnderstandingFile(request, apiKey) {
+  // 直接转发 POST 请求到 Gemini API
+  const urlObj = new URL(request.url);
+  // 兼容 /v1beta/models/{model_id}/understanding_file 或 /v1beta/models/{model_id}
+  const apiUrl = request.url;//`${BASE_URL}/${API_VERSION}/models/${modelId}/understanding_file?key=${apiKey}`;
+  const response = await fetch(apiUrl, {
+    method: "POST",
+    headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
+    body: await request.text(),
+  });
+
+  let body;
+  if (response.ok) {
+    body = await response.text();
+  } else {
+    body = JSON.stringify({ error: await response.text() });
+  }
+  return new Response(body, fixCors(response));
+} 
 
 // 列出文件
 async function handleListFiles(request, apiKey) {
