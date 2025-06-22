@@ -14,8 +14,14 @@ export default {
       return new Response(err.message, fixCors({ status: err.status ?? 500 }));
     };
     try {
-      const auth = request.headers.get("Authorization");
-      const apiKey = auth?.split(" ")[1];
+      const urlObj = new URL(request.url);
+      // 优先从URL参数获取key
+      let apiKey = urlObj.searchParams.get("key");
+      // 如果URL没有key，再尝试从header获取
+      if (!apiKey) {
+        const auth = request.headers.get("Authorization");
+        apiKey = auth?.split(" ")[1];
+      }
       const assert = (success) => {
         if (!success) {
           throw new HttpError("The specified HTTP method is not allowed for the requested resource", 400);
@@ -229,7 +235,7 @@ async function handleUploadFiles(request, apiKey) {
     }),
     body: fileData,
   });
-  console.log(apiKey)
+
   // 3. 处理 Gemini 响应，兼容你的 Python 客户端
   let body;
   if (response.ok) {
