@@ -257,9 +257,7 @@ function replaceBaseUrl(url, newBase) {
 }
 // 理解文件
 async function handleUnderstandingFile(request, apiKey) {
-  // 解析请求体
   const req = await request.json();
-  // 假设 req.contents[0].parts 结构与 Python 端一致
   let text = "";
   let file_data = {};
   if (req.contents && req.contents[0] && req.contents[0].parts) {
@@ -268,18 +266,21 @@ async function handleUnderstandingFile(request, apiKey) {
       if (part.file_data) file_data = part.file_data;
     }
   }
-  // 组装 Gemini API 需要的 payload
+  // 只添加有内容的 parts
+  const parts = [];
+  if (text) parts.push({ text });
+  if (file_data && (file_data.mime_type || file_data.mimeType) && (file_data.file_uri || file_data.uri)) {
+    parts.push({
+      file_data: {
+        mime_type: file_data.mime_type || file_data.mimeType,
+        file_uri: file_data.file_uri || file_data.uri,
+      }
+    });
+  }
   const payload = {
     contents: [
       {
-        parts: [
-          { text },
-          { file_data: {
-              mime_type: file_data.mime_type || file_data.mimeType,
-              file_uri: file_data.file_uri || file_data.uri
-            }
-          }
-        ]
+        parts
       }
     ],
     generationConfig: req.generationConfig || { candidateCount: 1, temperature: 0.2 }
