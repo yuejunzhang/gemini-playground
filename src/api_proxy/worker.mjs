@@ -48,10 +48,11 @@ export default {
         case pathname.includes("/v1beta/files/")://仅支持gemini 格式请求
           assert(request.method === "GET");
           return handleListFiles(request, apiKey)
+            .catch(errHandler);
         case pathname.includes("/v1beta/models/")://仅支持gemini 格式请求
           assert(request.method === "POST");
           return handleUnderstandingFile(request, apiKey)           
-          .catch(errHandler);
+            .catch(errHandler);
         // case pathname.includes("/v1beta/filename):
         //   assert(request.method === "DELETE");
         //   return handleDeleteFile(request, apiKey)
