@@ -258,25 +258,15 @@ function replaceBaseUrl(url, newBase) {
 // 理解文件
 async function handleUnderstandingFile(request, apiKey) {
   // 只消费一次 body
-  const reqBody = await request.text();
-  let geminiBody;
-  try {
-    const parsed = JSON.parse(reqBody);
-    // 如果已经是 Gemini 格式就直接用，否则转换
-    if (parsed.contents && Array.isArray(parsed.contents)) {
-      geminiBody = reqBody;
-    } else {
-      geminiBody = JSON.stringify(await transformRequest(parsed));
-    }
-  } catch (e) {
-    return new Response(JSON.stringify({ error: "Invalid JSON body" }), fixCors({ status: 400 }));
-  }
+  const reqBody = await request.json();
   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
+  console.log("apiUrl:", apiUrl);
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
-    body: geminiBody,
+    body: JSON.stringify(reqBody),
   });
+  console.log(reqBody, response); // 只用变量
   let body;
   if (response.ok) {
     body = await response.text();
