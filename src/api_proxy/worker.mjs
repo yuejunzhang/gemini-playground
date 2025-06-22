@@ -257,40 +257,13 @@ function replaceBaseUrl(url, newBase) {
 }
 // 理解文件
 async function handleUnderstandingFile(request, apiKey) {
-  const req = await request.json();
-  let text = "";
-  let file_data = {};
-  if (req.contents && req.contents[0] && req.contents[0].parts) {
-    for (const part of req.contents[0].parts) {
-      if (part.text) text = part.text;
-      if (part.file_data) file_data = part.file_data;
-    }
-  }
-  // 只添加有内容的 parts
-  const parts = [];
-  if (text) parts.push({ text });
-  if (file_data && (file_data.mime_type || file_data.mimeType) && (file_data.file_uri || file_data.uri)) {
-    parts.push({
-      file_data: {
-        mime_type: file_data.mime_type || file_data.mimeType,
-        file_uri: file_data.file_uri || file_data.uri,
-      }
-    });
-  }
-  const payload = {
-    contents: [
-      {
-        parts
-      }
-    ],
-    generationConfig: req.generationConfig || { candidateCount: 1, temperature: 0.2 }
-  };
-
+  // 直接读取原始 body 字符串
+  const rawBody = await request.text();
   const apiUrl = replaceBaseUrl(request.url, `${BASE_URL}`);
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: makeHeaders(apiKey, { "Content-Type": "application/json" }),
-    body: JSON.stringify(payload),
+    body: rawBody, // 原样转发
   });
   let body;
   if (response.ok) {
@@ -298,6 +271,7 @@ async function handleUnderstandingFile(request, apiKey) {
   } else {
     body = JSON.stringify({ error: await response.text() });
   }
+  console.log("理解文件响应:", body);
   return new Response(body, fixCors(response));
 }
 
